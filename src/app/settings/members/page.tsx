@@ -54,9 +54,17 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
     <>
       <Nav email={session.email.value} current="/settings/members" />
       <main className="mx-auto max-w-3xl px-6 py-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-slate-900">{company?.name ?? 'Workspace'}</h1>
-          <p className="text-sm text-slate-500">Manage members and invitations</p>
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900">{company?.name ?? 'Workspace'}</h1>
+            <p className="text-sm text-slate-500">Manage members and invitations</p>
+          </div>
+          <a
+            href="/settings/billing"
+            className="text-sm font-medium text-brand-600 hover:underline"
+          >
+            Billing →
+          </a>
         </div>
 
       {params.error && (
