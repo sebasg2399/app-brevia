@@ -20,7 +20,11 @@ import { NodeIdGenerator } from '@infra/id/uuid-id-generator';
 import { clock } from '@infra/clock/system-clock';
 import { AnthropicAIGateway } from '@infra/ai/anthropic-ai-gateway';
 import { StubAIGateway } from '@infra/ai/stub-ai-gateway';
+import { StripeSdkGateway, NoopStripeGateway } from '@infra/stripe/stripe-sdk-gateway';
+import { SupabaseWebhookEventRepository } from '@infra/supabase/repos/webhook-event-repository';
 import type { AIGateway } from '@app/ports/ai-gateway';
+import type { StripeGateway } from '@app/ports/stripe-gateway';
+import type { WebhookEventRepository } from '@app/ports/webhook-event-repository';
 import { SignUp } from '@app/use-cases/sign-up';
 import { SignIn } from '@app/use-cases/sign-in';
 import { CreateWorkspace } from '@app/use-cases/create-workspace';
@@ -37,6 +41,8 @@ import { CancelSession } from '@app/use-cases/cancel-session';
 import { CreateTranscript } from '@app/use-cases/create-transcript';
 import { RetryNotes } from '@app/use-cases/retry-notes';
 import { GetQuotaUsage } from '@app/use-cases/get-quota-usage';
+import { StartCheckout } from '@app/use-cases/start-checkout';
+import { OpenCustomerPortal } from '@app/use-cases/open-customer-portal';
 
 export interface UseCases {
   signUp: SignUp;
@@ -55,6 +61,12 @@ export interface UseCases {
   createTranscript: CreateTranscript;
   retryNotes: RetryNotes;
   getQuotaUsage: GetQuotaUsage;
+  startCheckout: StartCheckout;
+  openCustomerPortal: OpenCustomerPortal;
+}
+
+export interface WebhookHandlers {
+  handleStripeWebhook: import('@app/use-cases/handle-stripe-webhook').HandleStripeWebhook; // eslint-disable-line @typescript-eslint/consistent-type-imports
 }
 
 function resolveAI(): AIGateway {
@@ -63,6 +75,12 @@ function resolveAI(): AIGateway {
     return new AnthropicAIGateway(apiKey);
   }
   return new StubAIGateway();
+}
+
+function resolveStripe(): StripeGateway {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (key && key.length > 0) return new StripeSdkGateway(key);
+  return new NoopStripeGateway();
 }
 
 export async function getUseCases(): Promise<UseCases> {
@@ -82,6 +100,7 @@ export async function getUseCases(): Promise<UseCases> {
   const tokens = new NodeTokenHasher();
   const ids = new NodeIdGenerator();
   const ai = resolveAI();
+  const stripe = resolveStripe();
 
   return {
     signUp: new SignUp({ auth, users, companies, memberships, subscriptions, ids, clock }),
@@ -119,6 +138,34 @@ export async function getUseCases(): Promise<UseCases> {
     }),
     retryNotes: new RetryNotes({ notes, subscriptions, memberships, clock }),
     getQuotaUsage: new GetQuotaUsage({ subscriptions, notes, clock }),
+    startCheckout: new StartCheckout({
+      stripe,
+      memberships,
+      subscriptions,
+      users,
+      clock,
+    }),
+    openCustomerPortal: new OpenCustomerPortal({
+      stripe,
+      memberships,
+      subscriptions,
+    }),
+  };
+}
+
+export async function getWebhookHandlers(): Promise<WebhookHandlers> {
+  const HandleStripeWebhook = (await import('@app/use-cases/handle-stripe-webhook')).HandleStripeWebhook;
+  const svc = createSupabaseServiceClient();
+  const subscriptions = new SupabaseSubscriptionRepository(svc);
+  const events: WebhookEventRepository = new SupabaseWebhookEventRepository(svc);
+  const stripe = resolveStripe();
+  return {
+    handleStripeWebhook: new HandleStripeWebhook({
+      stripe,
+      subscriptions,
+      events,
+      clock,
+    }),
   };
 }
 

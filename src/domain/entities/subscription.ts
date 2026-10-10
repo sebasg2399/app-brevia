@@ -9,6 +9,7 @@ export interface SubscriptionProps {
   readonly plan: Plan;
   readonly status: SubscriptionStatus;
   readonly currentPeriodEnd: string | null;
+  readonly trialEndsAt: string | null;
   readonly stripeCustomerId: string | null;
   readonly stripeSubscriptionId: string | null;
   readonly createdAt: string;
@@ -23,6 +24,7 @@ export class Subscription {
     plan: Plan;
     status?: SubscriptionStatus;
     currentPeriodEnd?: string | null;
+    trialEndsAt?: string | null;
     now: string;
   }): Subscription {
     return new Subscription({
@@ -30,6 +32,7 @@ export class Subscription {
       plan: input.plan,
       status: input.status ?? 'active',
       currentPeriodEnd: input.currentPeriodEnd ?? null,
+      trialEndsAt: input.trialEndsAt ?? null,
       stripeCustomerId: null,
       stripeSubscriptionId: null,
       createdAt: input.now,
@@ -41,7 +44,6 @@ export class Subscription {
     return new Subscription(props);
   }
 
-  // WU-4 (Stripe) will call these
   changePlan(plan: Plan, now: string): void {
     this.props = { ...this.props, plan, updatedAt: now };
   }
@@ -51,6 +53,10 @@ export class Subscription {
       throw new ValidationError(`Invalid subscription status: ${status}`);
     }
     this.props = { ...this.props, status, updatedAt: now };
+  }
+
+  updateBillingPeriod(currentPeriodEnd: string | null, trialEndsAt: string | null, now: string): void {
+    this.props = { ...this.props, currentPeriodEnd, trialEndsAt, updatedAt: now };
   }
 
   setStripeIds(customerId: string, subscriptionId: string, now: string): void {
@@ -66,6 +72,14 @@ export class Subscription {
     return this.props.status === 'active' || this.props.status === 'trialing';
   }
 
+  isTrialing(now: string): boolean {
+    return (
+      this.props.status === 'trialing' &&
+      this.props.trialEndsAt !== null &&
+      Date.parse(now) < Date.parse(this.props.trialEndsAt)
+    );
+  }
+
   get companyId(): CompanyId {
     return this.props.companyId;
   }
@@ -77,6 +91,9 @@ export class Subscription {
   }
   get currentPeriodEnd(): string | null {
     return this.props.currentPeriodEnd;
+  }
+  get trialEndsAt(): string | null {
+    return this.props.trialEndsAt;
   }
   get stripeCustomerId(): string | null {
     return this.props.stripeCustomerId;
