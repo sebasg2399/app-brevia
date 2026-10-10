@@ -13,6 +13,7 @@ create table public.subscriptions (
   plan text not null check (plan in ('free', 'pro', 'team')),
   status public.subscription_status not null default 'active',
   current_period_end timestamptz,
+  trial_ends_at timestamptz,
   stripe_customer_id text,
   stripe_subscription_id text,
   created_at timestamptz not null default now(),

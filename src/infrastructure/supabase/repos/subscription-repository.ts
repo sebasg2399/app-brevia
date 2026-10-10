@@ -10,6 +10,7 @@ interface SubscriptionRow {
   plan: string;
   status: SubscriptionStatus;
   current_period_end: string | null;
+  trial_ends_at: string | null;
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
   created_at: string;
@@ -35,6 +36,7 @@ export class SupabaseSubscriptionRepository implements SubscriptionRepository {
       plan: subscription.plan.name,
       status: subscription.status,
       current_period_end: subscription.currentPeriodEnd,
+      trial_ends_at: subscription.trialEndsAt,
       stripe_customer_id: subscription.stripeCustomerId,
       stripe_subscription_id: subscription.stripeSubscriptionId,
       created_at: subscription.createdAt,
@@ -50,6 +52,7 @@ export class SupabaseSubscriptionRepository implements SubscriptionRepository {
       plan: Plan.fromName(row.plan),
       status: row.status,
       currentPeriodEnd: row.current_period_end,
+      trialEndsAt: row.trial_ends_at,
       stripeCustomerId: row.stripe_customer_id,
       stripeSubscriptionId: row.stripe_subscription_id,
       createdAt: row.created_at,

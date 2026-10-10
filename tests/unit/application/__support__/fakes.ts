@@ -10,7 +10,15 @@ import type { SessionRepository } from '@app/ports/session-repository';
 import type { TranscriptRepository } from '@app/ports/transcript-repository';
 import type { AINotesRepository } from '@app/ports/ai-notes-repository';
 import type { SubscriptionRepository } from '@app/ports/subscription-repository';
+import type { WebhookEventRepository } from '@app/ports/webhook-event-repository';
 import type { AIGateway, AIGatewayGenerateInput, AINotesDraft } from '@app/ports/ai-gateway';
+import type {
+  StripeGateway,
+  StripeEvent,
+  CreateCheckoutInput,
+  CreateCheckoutResult,
+  CreatePortalInput,
+} from '@app/ports/stripe-gateway';
 import type { EmailGateway } from '@app/ports/email-gateway';
 import type { TokenHasher } from '@app/ports/token-hasher';
 import type { IdGenerator } from '@app/ports/id-generator';
@@ -327,8 +335,54 @@ export class InMemorySubscriptionRepository implements SubscriptionRepository {
   async findByCompanyId(companyId: CompanyId): Promise<Subscription | null> {
     return this.store.get(companyId.toString()) ?? null;
   }
+  async findByStripeCustomerId(stripeCustomerId: string): Promise<Subscription | null> {
+    for (const s of this.store.values()) {
+      if (s.stripeCustomerId === stripeCustomerId) return s;
+    }
+    return null;
+  }
   async save(subscription: Subscription): Promise<void> {
     this.store.set(subscription.companyId.toString(), subscription);
+  }
+}
+
+export class InMemoryWebhookEventRepository implements WebhookEventRepository {
+  private store = new Set<string>();
+  async hasProcessed(eventId: string, source: string): Promise<boolean> {
+    return this.store.has(`${source}:${eventId}`);
+  }
+  async markProcessed(eventId: string, source: string): Promise<boolean> {
+    const key = `${source}:${eventId}`;
+    if (this.store.has(key)) return false;
+    this.store.add(key);
+    return true;
+  }
+}
+
+export class FakeStripeGateway implements StripeGateway {
+  public checkoutCalls: CreateCheckoutInput[] = [];
+  public portalCalls: CreatePortalInput[] = [];
+  public nextCheckoutUrl: string | null = null;
+  public nextCustomerId: string | null = null;
+  public eventToReturn: StripeEvent | null = null;
+  public nextPortalUrl: string | null = null;
+
+  async createCheckoutSession(input: CreateCheckoutInput): Promise<CreateCheckoutResult> {
+    this.checkoutCalls.push(input);
+    return {
+      url: this.nextCheckoutUrl ?? 'https://stripe.test/checkout',
+      customerId: this.nextCustomerId ?? 'cus_test_123',
+    };
+  }
+  async createPortalSession(input: CreatePortalInput): Promise<{ url: string }> {
+    this.portalCalls.push(input);
+    return { url: this.nextPortalUrl ?? 'https://stripe.test/portal' };
+  }
+  verifyWebhook(_rawBody: Buffer, _signature: string): StripeEvent {
+    if (!this.eventToReturn) {
+      throw new Error('FakeStripeGateway: set eventToReturn before verifyWebhook');
+    }
+    return this.eventToReturn;
   }
 }
 
