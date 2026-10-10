@@ -23,11 +23,22 @@ export interface CreatePortalInput {
 export interface StripeSubscriptionPayload {
   readonly id: string;
   readonly customer: string;
-  readonly status: 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'incomplete_expired' | 'unpaid' | 'paused';
+  readonly status:
+    | 'active'
+    | 'trialing'
+    | 'past_due'
+    | 'canceled'
+    | 'incomplete'
+    | 'incomplete_expired'
+    | 'unpaid'
+    | 'paused';
   readonly current_period_end: number; // unix seconds
   readonly trial_end: number | null;
   readonly metadata: Record<string, string>;
-  readonly items: ReadonlyArray<{ price: { id: string }; plan?: { metadata?: Record<string, string> } }>;
+  readonly items: ReadonlyArray<{
+    price: { id: string };
+    plan?: { metadata?: Record<string, string> };
+  }>;
 }
 
 export type StripeEventType =

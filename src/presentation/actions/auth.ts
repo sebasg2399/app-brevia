@@ -29,7 +29,9 @@ export async function signUpAction(formData: FormData): Promise<void> {
     workspaceName: formData.get('workspaceName'),
   });
   if (!parsed.success) {
-    const msg = parsed.error.issues.map((i) => `${i.path.join('.') || 'field'}: ${i.message}`).join(', ');
+    const msg = parsed.error.issues
+      .map((i) => `${i.path.join('.') || 'field'}: ${i.message}`)
+      .join(', ');
     throw new ActionError(msg);
   }
 
@@ -61,7 +63,9 @@ export async function signInAction(formData: FormData): Promise<void> {
     password: formData.get('password'),
   });
   if (!parsed.success) {
-    const msg = parsed.error.issues.map((i) => `${i.path.join('.') || 'field'}: ${i.message}`).join(', ');
+    const msg = parsed.error.issues
+      .map((i) => `${i.path.join('.') || 'field'}: ${i.message}`)
+      .join(', ');
     throw new ActionError(msg);
   }
 

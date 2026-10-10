@@ -8,7 +8,10 @@ import { NotFoundError, UnauthorizedError } from '@domain/errors/domain-error';
 export class SupabaseAuthGateway implements AuthGateway {
   constructor(private readonly db: SupabaseClient) {}
 
-  async signUp(input: { email: Email; password: string }): Promise<{ userId: UserId; email: Email; session: AuthSession | null }> {
+  async signUp(input: {
+    email: Email;
+    password: string;
+  }): Promise<{ userId: UserId; email: Email; session: AuthSession | null }> {
     const { data, error } = await this.db.auth.signUp({
       email: input.email.value,
       password: input.password,
@@ -69,7 +72,9 @@ export class SupabaseAuthGateway implements AuthGateway {
     expiresAt: number | string,
   ): AuthSession {
     const expiresIso =
-      typeof expiresAt === 'number' ? new Date(expiresAt * 1000).toISOString() : new Date(expiresAt).toISOString();
+      typeof expiresAt === 'number'
+        ? new Date(expiresAt * 1000).toISOString()
+        : new Date(expiresAt).toISOString();
     return { userId, email, accessToken, refreshToken, expiresAt: expiresIso };
   }
 }

@@ -52,7 +52,10 @@ export class InviteMember {
       throw new NotFoundError('Company', input.companyId.toString());
     }
     const email = Email.create(input.email);
-    const pending = await this.deps.invitations.findPendingByCompanyAndEmail(input.companyId, email);
+    const pending = await this.deps.invitations.findPendingByCompanyAndEmail(
+      input.companyId,
+      email,
+    );
     if (pending) {
       throw new ConflictError(`An invitation is already pending for ${email.value}`);
     }

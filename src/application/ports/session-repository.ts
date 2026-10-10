@@ -1,10 +1,5 @@
 import type { Session, SessionStatus } from '@domain/entities/session';
-import type {
-  ClientId,
-  CoachId,
-  CompanyId,
-  SessionId,
-} from '@domain/value-objects/branded-id';
+import type { ClientId, CoachId, CompanyId, SessionId } from '@domain/value-objects/branded-id';
 
 export interface SessionRepository {
   findById(id: SessionId): Promise<Session | null>;

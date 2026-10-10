@@ -131,7 +131,9 @@ describe('AcceptInvitation', () => {
     const result = await h.sut.execute({ token, password: 'password123' });
 
     expect(result.session).not.toBeNull();
-    const user = await h.users.findByEmail((await import('@domain/value-objects/email')).Email.create('newcoach@x.com'));
+    const user = await h.users.findByEmail(
+      (await import('@domain/value-objects/email')).Email.create('newcoach@x.com'),
+    );
     expect(user).not.toBeNull();
 
     const memberships = await h.memberships.listByUser(result.userId);
@@ -148,9 +150,7 @@ describe('AcceptInvitation', () => {
   it('cannot accept twice', async () => {
     const token = await h.issueToken('twice@x.com');
     await h.sut.execute({ token, password: 'password123' });
-    await expect(
-      h.sut.execute({ token, password: 'password123' }),
-    ).rejects.toThrow(/already/i);
+    await expect(h.sut.execute({ token, password: 'password123' })).rejects.toThrow(/already/i);
   });
 
   it('rejects weak password', async () => {
@@ -160,7 +160,9 @@ describe('AcceptInvitation', () => {
 
   it('cannot accept if invitation is expired', async () => {
     const token = await h.issueToken('expired@x.com');
-    (h.sut as unknown as { deps: { clock: { advance: (s: number) => void } } }).deps.clock.advance(8 * 24 * 60 * 60);
+    (h.sut as unknown as { deps: { clock: { advance: (s: number) => void } } }).deps.clock.advance(
+      8 * 24 * 60 * 60,
+    );
     await expect(h.sut.execute({ token, password: 'password123' })).rejects.toThrow(/expired/i);
   });
 

@@ -5,12 +5,7 @@ import type { MembershipRepository } from '@app/ports/membership-repository';
 import type { IdGenerator } from '@app/ports/id-generator';
 import type { Clock } from '@app/ports/clock';
 import { Session } from '@domain/entities/session';
-import type {
-  ClientId,
-  CoachId,
-  CompanyId,
-  UserId,
-} from '@domain/value-objects/branded-id';
+import type { ClientId, CoachId, CompanyId, UserId } from '@domain/value-objects/branded-id';
 import { ForbiddenError, NotFoundError } from '@domain/errors/domain-error';
 
 export interface BookSessionInput {
@@ -53,7 +48,9 @@ export class BookSession {
     }
     const isOwner = await this.isOwner(input.companyId, input.actorId);
     if (!isOwner && !coach.userId.equals(input.actorId)) {
-      throw new ForbiddenError('Only the assigned coach or the workspace owner can book this session');
+      throw new ForbiddenError(
+        'Only the assigned coach or the workspace owner can book this session',
+      );
     }
     const now = this.deps.clock.now();
     const session = Session.create({

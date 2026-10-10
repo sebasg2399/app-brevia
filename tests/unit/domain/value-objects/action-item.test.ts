@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { ActionItem, countWords, assertActionItemsShape, MAX_SUMMARY_WORDS, MAX_BRIEF_WORDS } from '@domain/value-objects/action-item';
+import {
+  ActionItem,
+  countWords,
+  assertActionItemsShape,
+  MAX_SUMMARY_WORDS,
+  MAX_BRIEF_WORDS,
+} from '@domain/value-objects/action-item';
 import { ValidationError } from '@domain/errors/domain-error';
 
 describe('ActionItem', () => {
@@ -19,7 +25,9 @@ describe('ActionItem', () => {
   });
 
   it('throws on title > 200 chars', () => {
-    expect(() => ActionItem.create({ title: 'a'.repeat(201), dueDate: null })).toThrow(ValidationError);
+    expect(() => ActionItem.create({ title: 'a'.repeat(201), dueDate: null })).toThrow(
+      ValidationError,
+    );
   });
 
   it('normalizes dueDate to ISO', () => {

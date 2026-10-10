@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Invitation } from '@domain/entities/invitation';
-import {
-  CompanyId,
-  InvitationId,
-  UserId,
-} from '@domain/value-objects/branded-id';
+import { CompanyId, InvitationId, UserId } from '@domain/value-objects/branded-id';
 import { Email } from '@domain/value-objects/email';
 import { ConflictError } from '@domain/errors/domain-error';
 
@@ -42,7 +38,7 @@ describe('Invitation', () => {
         email,
         role: 'coach',
         invitedBy: inviterId,
-tokenHash: 'hash12345678',
+        tokenHash: 'hash12345678',
         now,
         expiresAt: '2025-12-31T00:00:00.000Z',
       }),

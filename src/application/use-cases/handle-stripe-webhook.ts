@@ -1,4 +1,9 @@
-import type { StripeGateway, StripeEvent, StripeSubscriptionPayload, StripeEventType } from '@app/ports/stripe-gateway';
+import type {
+  StripeGateway,
+  StripeEvent,
+  StripeSubscriptionPayload,
+  StripeEventType,
+} from '@app/ports/stripe-gateway';
 import type { SubscriptionRepository } from '@app/ports/subscription-repository';
 import type { WebhookEventRepository } from '@app/ports/webhook-event-repository';
 import type { Clock } from '@app/ports/clock';
@@ -24,7 +29,10 @@ export class HandleStripeWebhook {
     },
   ) {}
 
-  async execute(input: { rawBody: Buffer; signature: string }): Promise<{ handled: boolean; duplicate: boolean }> {
+  async execute(input: {
+    rawBody: Buffer;
+    signature: string;
+  }): Promise<{ handled: boolean; duplicate: boolean }> {
     const event = this.deps.stripe.verifyWebhook(input.rawBody, input.signature);
 
     // Idempotency: markProcessed returns false on duplicate
@@ -97,7 +105,10 @@ export class HandleStripeWebhook {
     await this.deps.subscriptions.save(existing);
   }
 
-  private async markByCustomer(customerId: string | null, status: 'active' | 'past_due'): Promise<void> {
+  private async markByCustomer(
+    customerId: string | null,
+    status: 'active' | 'past_due',
+  ): Promise<void> {
     if (!customerId) return;
     const subscription = await this.deps.subscriptions.findByStripeCustomerId(customerId);
     if (!subscription) return;
@@ -118,8 +129,7 @@ export class HandleStripeWebhook {
 
   private findPlan(payload: StripeSubscriptionPayload): ReturnType<typeof Plan.fromName> {
     const priceMeta = payload.items?.[0]?.plan?.metadata?.['plan'];
-    const planName: PlanName =
-      priceMeta === 'pro' || priceMeta === 'team' ? priceMeta : 'pro';
+    const planName: PlanName = priceMeta === 'pro' || priceMeta === 'team' ? priceMeta : 'pro';
     return Plan.fromName(planName);
   }
 

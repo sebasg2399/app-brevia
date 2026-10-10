@@ -48,7 +48,9 @@ export default async function SessionDetailPage({
   const { data: notesRow } = transcriptRow
     ? await svc
         .from('ai_notes')
-        .select('id, status, summary, action_items, next_session_brief, model, error_message, created_at, updated_at')
+        .select(
+          'id, status, summary, action_items, next_session_brief, model, error_message, created_at, updated_at',
+        )
         .eq('transcript_id', transcriptRow.id)
         .maybeSingle()
     : { data: null };
@@ -86,9 +88,9 @@ export default async function SessionDetailPage({
       transcriptId: TranscriptId.fromString(transcriptRow!.id),
       status: notesRow.status,
       summary: notesRow.summary,
-      actionItems: ((notesRow.action_items ?? []) as Array<{ title: string; dueDate: string | null }>).map(
-        (j) => ActionItem.create({ title: j.title, dueDate: j.dueDate }),
-      ),
+      actionItems: (
+        (notesRow.action_items ?? []) as Array<{ title: string; dueDate: string | null }>
+      ).map((j) => ActionItem.create({ title: j.title, dueDate: j.dueDate })),
       nextSessionBrief: notesRow.next_session_brief,
       model: notesRow.model,
       rawResponse: null,
@@ -131,7 +133,8 @@ export default async function SessionDetailPage({
             <div>
               <dt className="text-xs font-medium text-slate-500">Coach</dt>
               <dd className="mt-1 text-slate-900">
-                {(sessionRow.coaches as { display_name?: string }[] | null)?.[0]?.display_name ?? '—'}
+                {(sessionRow.coaches as { display_name?: string }[] | null)?.[0]?.display_name ??
+                  '—'}
               </dd>
             </div>
             <div>
@@ -191,7 +194,8 @@ export default async function SessionDetailPage({
           <section className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="mb-1 text-lg font-semibold text-slate-900">Add transcript</h2>
             <p className="mb-3 text-xs text-slate-500">
-              Paste the session transcript (200-50000 chars). AI notes will be generated automatically.
+              Paste the session transcript (200-50000 chars). AI notes will be generated
+              automatically.
             </p>
             <form
               action={async (fd: FormData) => {

@@ -176,13 +176,12 @@ export class InMemoryInvitationRepository implements InvitationRepository {
     }
     return null;
   }
-  async findPendingByCompanyAndEmail(companyId: CompanyId, email: Email): Promise<Invitation | null> {
+  async findPendingByCompanyAndEmail(
+    companyId: CompanyId,
+    email: Email,
+  ): Promise<Invitation | null> {
     for (const i of this.store.values()) {
-      if (
-        i.companyId.equals(companyId) &&
-        i.email.equals(email) &&
-        i.status === 'pending'
-      ) {
+      if (i.companyId.equals(companyId) && i.email.equals(email) && i.status === 'pending') {
         return i;
       }
     }
@@ -229,17 +228,16 @@ export class InMemoryClientRepository implements ClientRepository {
   }
   async findActiveByCompanyAndEmail(companyId: CompanyId, email: Email): Promise<Client | null> {
     for (const c of this.store.values()) {
-      if (
-        c.belongsToCompany(companyId) &&
-        !c.isDeleted() &&
-        c.email?.equals(email)
-      ) {
+      if (c.belongsToCompany(companyId) && !c.isDeleted() && c.email?.equals(email)) {
         return c;
       }
     }
     return null;
   }
-  async listByCompany(companyId: CompanyId, includeDeleted = false): Promise<ReadonlyArray<Client>> {
+  async listByCompany(
+    companyId: CompanyId,
+    includeDeleted = false,
+  ): Promise<ReadonlyArray<Client>> {
     return Array.from(this.store.values()).filter(
       (c) => c.belongsToCompany(companyId) && (includeDeleted || !c.isDeleted()),
     );
@@ -254,7 +252,10 @@ export class InMemorySessionRepository implements SessionRepository {
   async findById(id: SessionId): Promise<Session | null> {
     return this.store.get(id.toString()) ?? null;
   }
-  async listByCompany(companyId: CompanyId, status?: SessionStatus): Promise<ReadonlyArray<Session>> {
+  async listByCompany(
+    companyId: CompanyId,
+    status?: SessionStatus,
+  ): Promise<ReadonlyArray<Session>> {
     return Array.from(this.store.values()).filter(
       (s) => s.belongsToCompany(companyId) && (status === undefined || s.status === status),
     );
@@ -269,7 +270,10 @@ export class InMemorySessionRepository implements SessionRepository {
       (s) => s.clientId.equals(clientId) && (status === undefined || s.status === status),
     );
   }
-  async listByCoachAndClient(coachId: CoachId, clientId: ClientId): Promise<ReadonlyArray<Session>> {
+  async listByCoachAndClient(
+    coachId: CoachId,
+    clientId: ClientId,
+  ): Promise<ReadonlyArray<Session>> {
     return Array.from(this.store.values()).filter(
       (s) => s.coachId.equals(coachId) && s.clientId.equals(clientId),
     );
@@ -401,8 +405,7 @@ export class FakeAIGateway implements AIGateway {
       actionItems: this.draftOverride?.actionItems ?? [
         ActionItem.create({ title: 'Follow up on the main theme', dueDate: null }),
       ],
-      nextSessionBrief:
-        this.draftOverride?.nextSessionBrief ?? 'Focus on outcomes next time.',
+      nextSessionBrief: this.draftOverride?.nextSessionBrief ?? 'Focus on outcomes next time.',
       model: this.draftOverride?.model ?? 'claude-sonnet-4-5',
       rawResponse:
         this.draftOverride?.rawResponse ?? JSON.stringify({ length: input.transcript.length }),
@@ -414,7 +417,10 @@ export class FakeAuthGateway implements AuthGateway {
   private passwords = new Map<string, { userId: UserId; email: Email }>();
   private tokens = new Map<string, UserId>();
 
-  async signUp(input: { email: Email; password: string }): Promise<{ userId: UserId; email: Email; session: AuthSession | null }> {
+  async signUp(input: {
+    email: Email;
+    password: string;
+  }): Promise<{ userId: UserId; email: Email; session: AuthSession | null }> {
     if (this.passwords.has(input.email.value)) {
       throw new ConflictError('Email already registered');
     }

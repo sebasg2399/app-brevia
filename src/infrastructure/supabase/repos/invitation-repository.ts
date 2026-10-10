@@ -43,7 +43,10 @@ export class SupabaseInvitationRepository implements InvitationRepository {
     return this.toDomain(data);
   }
 
-  async findPendingByCompanyAndEmail(companyId: CompanyId, email: Email): Promise<Invitation | null> {
+  async findPendingByCompanyAndEmail(
+    companyId: CompanyId,
+    email: Email,
+  ): Promise<Invitation | null> {
     const { data, error } = await this.db
       .from('invitations')
       .select('*')

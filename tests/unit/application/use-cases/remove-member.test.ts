@@ -2,16 +2,9 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { RemoveMember } from '@app/use-cases/remove-member';
 import { Company } from '@domain/entities/company';
 import { Membership } from '@domain/entities/membership';
-import {
-  CompanyId,
-  MembershipId,
-  UserId,
-} from '@domain/value-objects/branded-id';
+import { CompanyId, MembershipId, UserId } from '@domain/value-objects/branded-id';
 import { Slug } from '@domain/value-objects/slug';
-import {
-  FakeIdGenerator,
-  InMemoryMembershipRepository,
-} from '../__support__/fakes';
+import { FakeIdGenerator, InMemoryMembershipRepository } from '../__support__/fakes';
 
 describe('RemoveMember', () => {
   const ownerId = UserId.fromString('12345678-1234-4234-8234-123456789012');

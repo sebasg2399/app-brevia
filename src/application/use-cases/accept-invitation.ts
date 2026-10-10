@@ -56,7 +56,10 @@ export class AcceptInvitation {
     let user = await this.deps.users.findByEmail(invitation.email);
     let authSession: Awaited<ReturnType<AuthGateway['signUp']>>['session'] = null;
     if (!user) {
-      const result = await this.deps.auth.signUp({ email: invitation.email, password: input.password });
+      const result = await this.deps.auth.signUp({
+        email: invitation.email,
+        password: input.password,
+      });
       user = User.create({ id: result.userId, email: invitation.email, fullName: null, now });
       await this.deps.users.save(user);
       authSession = result.session;

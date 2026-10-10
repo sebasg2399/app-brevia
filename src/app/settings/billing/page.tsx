@@ -113,7 +113,12 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
                 name="pro"
                 title="Pro"
                 price="$29 / month"
-                bullets={['50 AI notes / month', 'Unlimited coaches & clients', '7-day free trial', 'Email support']}
+                bullets={[
+                  '50 AI notes / month',
+                  'Unlimited coaches & clients',
+                  '7-day free trial',
+                  'Email support',
+                ]}
                 companyId={owned.company_id}
                 highlighted
               />

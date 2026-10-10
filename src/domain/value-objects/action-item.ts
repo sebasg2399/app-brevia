@@ -9,7 +9,10 @@ const MAX_TITLE_LENGTH = 200;
 const MAX_ACTION_ITEMS = 7;
 
 export class ActionItem {
-  private constructor(public readonly title: string, public readonly dueDate: string | null) {}
+  private constructor(
+    public readonly title: string,
+    public readonly dueDate: string | null,
+  ) {}
 
   static create(input: ActionItemProps): ActionItem {
     if (typeof input.title !== 'string') {

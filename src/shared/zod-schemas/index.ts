@@ -1,21 +1,33 @@
 import { z } from 'zod';
 
 export const signUpSchema = z.object({
-  email: z.string().email().max(254).transform((s) => s.toLowerCase().trim()),
+  email: z
+    .string()
+    .email()
+    .max(254)
+    .transform((s) => s.toLowerCase().trim()),
   password: z.string().min(8).max(128),
   workspaceName: z.string().min(1).max(80),
 });
 export type SignUpInput = z.infer<typeof signUpSchema>;
 
 export const signInSchema = z.object({
-  email: z.string().email().max(254).transform((s) => s.toLowerCase().trim()),
+  email: z
+    .string()
+    .email()
+    .max(254)
+    .transform((s) => s.toLowerCase().trim()),
   password: z.string().min(1).max(128),
 });
 export type SignInInput = z.infer<typeof signInSchema>;
 
 export const inviteMemberSchema = z.object({
   companyId: z.string().uuid(),
-  email: z.string().email().max(254).transform((s) => s.toLowerCase().trim()),
+  email: z
+    .string()
+    .email()
+    .max(254)
+    .transform((s) => s.toLowerCase().trim()),
   role: z.enum(['coach', 'client']),
 });
 export type InviteMemberInput = z.infer<typeof inviteMemberSchema>;
@@ -37,10 +49,7 @@ export const createCoachSchema = z.object({
   userId: z.string().uuid(),
   displayName: z.string().min(1).max(120),
   bio: z.string().max(2000).default(''),
-  focusAreas: z
-    .array(z.string().min(1).max(40))
-    .min(1)
-    .max(8),
+  focusAreas: z.array(z.string().min(1).max(40)).min(1).max(8),
   hourlyRateCents: z.coerce.number().int().min(0).default(0),
 });
 export type CreateCoachInput = z.infer<typeof createCoachSchema>;
@@ -77,9 +86,12 @@ export const bookSessionSchema = z.object({
   coachId: z.string().uuid(),
   clientId: z.string().uuid(),
   scheduledAt: z.string().min(1),
-  durationMinutes: z.coerce.number().int().refine((n) => [15, 30, 45, 60, 90].includes(n), {
-    message: 'Duration must be 15, 30, 45, 60, or 90',
-  }),
+  durationMinutes: z.coerce
+    .number()
+    .int()
+    .refine((n) => [15, 30, 45, 60, 90].includes(n), {
+      message: 'Duration must be 15, 30, 45, 60, or 90',
+    }),
 });
 export type BookSessionInput = z.infer<typeof bookSessionSchema>;
 

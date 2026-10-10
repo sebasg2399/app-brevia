@@ -26,7 +26,9 @@ export class StripeSdkGateway implements StripeGateway {
   private readonly client: Stripe;
 
   constructor(secretKey: string) {
-    this.client = new Stripe(secretKey, { apiVersion: '2025-08-27.basil' as Stripe.LatestApiVersion });
+    this.client = new Stripe(secretKey, {
+      apiVersion: '2025-08-27.basil' as Stripe.LatestApiVersion,
+    });
   }
 
   async createCheckoutSession(input: CreateCheckoutInput): Promise<CreateCheckoutResult> {
@@ -49,7 +51,8 @@ export class StripeSdkGateway implements StripeGateway {
     }
     return {
       url: session.url,
-      customerId: typeof session.customer === 'string' ? session.customer : (session.customer?.id ?? ''),
+      customerId:
+        typeof session.customer === 'string' ? session.customer : (session.customer?.id ?? ''),
     };
   }
 

@@ -12,9 +12,7 @@ export default async function AcceptInvitationPage({ searchParams }: AcceptInvit
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
       <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
         <h1 className="mb-1 text-2xl font-semibold text-slate-900">Accept invitation</h1>
-        <p className="mb-6 text-sm text-slate-500">
-          Set a password to join the workspace.
-        </p>
+        <p className="mb-6 text-sm text-slate-500">Set a password to join the workspace.</p>
 
         {error && (
           <div className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>

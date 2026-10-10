@@ -174,9 +174,9 @@ describe('OpenCustomerPortal', () => {
       memberships: h.memberships,
       subscriptions: h.subscriptions,
     });
-    await expect(
-      sut.execute({ companyId, actorId: ownerId, appUrl: 'x' }),
-    ).rejects.toThrow(NotFoundError);
+    await expect(sut.execute({ companyId, actorId: ownerId, appUrl: 'x' })).rejects.toThrow(
+      NotFoundError,
+    );
   });
 
   it('rejects non-owner', async () => {
@@ -197,9 +197,9 @@ describe('OpenCustomerPortal', () => {
       memberships: h.memberships,
       subscriptions: h.subscriptions,
     });
-    await expect(
-      sut.execute({ companyId, actorId: coachId, appUrl: 'x' }),
-    ).rejects.toThrow(ForbiddenError);
+    await expect(sut.execute({ companyId, actorId: coachId, appUrl: 'x' })).rejects.toThrow(
+      ForbiddenError,
+    );
   });
 });
 

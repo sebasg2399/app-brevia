@@ -16,8 +16,8 @@ export default async function BillingSuccessPage({
         <div className="rounded-xl border border-green-200 bg-green-50 p-6 shadow-sm">
           <h1 className="text-2xl font-semibold text-green-900">Subscription active</h1>
           <p className="mt-2 text-sm text-green-800">
-            Your checkout completed successfully. The subscription status will update via
-            webhook within a few seconds.
+            Your checkout completed successfully. The subscription status will update via webhook
+            within a few seconds.
           </p>
           {session_id && (
             <p className="mt-1 text-xs text-green-700">Stripe session: {session_id}</p>

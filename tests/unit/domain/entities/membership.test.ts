@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Membership } from '@domain/entities/membership';
-import {
-  CompanyId,
-  MembershipId,
-  UserId,
-} from '@domain/value-objects/branded-id';
+import { CompanyId, MembershipId, UserId } from '@domain/value-objects/branded-id';
 import { ValidationError } from '@domain/errors/domain-error';
 
 const companyId = CompanyId.fromString('12345678-1234-4234-8234-123456789012');

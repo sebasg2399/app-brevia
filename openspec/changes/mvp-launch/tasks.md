@@ -2,13 +2,13 @@
 
 ## Review Workload Forecast
 
-| Field | Value |
-|-------|-------|
+| Field                   | Value                                 |
+| ----------------------- | ------------------------------------- |
 | Estimated changed lines | 2500–3500 (code + tests + migrations) |
-| 400-line budget risk | High |
-| Chained PRs recommended | Yes |
-| Delivery strategy | ask-on-risk |
-| Suggested split | 5 stacked PRs to main |
+| 400-line budget risk    | High                                  |
+| Chained PRs recommended | Yes                                   |
+| Delivery strategy       | ask-on-risk                           |
+| Suggested split         | 5 stacked PRs to main                 |
 
 ```
 Decision needed before apply: Yes
@@ -19,13 +19,13 @@ Chain strategy: stacked-to-main
 
 ### Suggested Work Units (stacked to main)
 
-| Unit | Goal | Likely PR |
-|------|------|-----------|
-| WU-1 | Foundations + Auth + Workspace | PR 1 → main |
-| WU-2 | Coaches + Clients + Sessions | PR 2 → main |
-| WU-3 | Transcripts + AI notes (Anthropic) | PR 3 → main |
+| Unit | Goal                                | Likely PR   |
+| ---- | ----------------------------------- | ----------- |
+| WU-1 | Foundations + Auth + Workspace      | PR 1 → main |
+| WU-2 | Coaches + Clients + Sessions        | PR 2 → main |
+| WU-3 | Transcripts + AI notes (Anthropic)  | PR 3 → main |
 | WU-4 | Stripe Billing + Webhooks + Plan UI | PR 4 → main |
-| WU-5 | E2E suite + README + demo polish | PR 5 → main |
+| WU-5 | E2E suite + README + demo polish    | PR 5 → main |
 
 Each PR demoable in isolation. RLS policies land with WU-1; subsequent PRs only add tables + policies for new entities.
 

@@ -54,7 +54,9 @@ export default async function CoachesPage({
           </div>
         )}
         {params.error && (
-          <div className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{params.error}</div>
+          <div className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+            {params.error}
+          </div>
         )}
 
         {firstMembership.role === 'owner' && (
@@ -70,7 +72,9 @@ export default async function CoachesPage({
             >
               <input type="hidden" name="companyId" value={companyId} />
               <label className="flex flex-col gap-1 sm:col-span-2">
-                <span className="text-xs font-medium text-slate-700">User ID (the coach&apos;s auth user)</span>
+                <span className="text-xs font-medium text-slate-700">
+                  User ID (the coach&apos;s auth user)
+                </span>
                 <input
                   name="userId"
                   type="text"
@@ -107,7 +111,9 @@ export default async function CoachesPage({
                 />
               </label>
               <label className="flex flex-col gap-1 sm:col-span-2">
-                <span className="text-xs font-medium text-slate-700">Focus areas (comma-separated)</span>
+                <span className="text-xs font-medium text-slate-700">
+                  Focus areas (comma-separated)
+                </span>
                 <input
                   name="focusAreas"
                   type="text"
@@ -128,7 +134,9 @@ export default async function CoachesPage({
         )}
 
         <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="mb-3 text-lg font-semibold text-slate-900">Team ({coaches?.length ?? 0})</h2>
+          <h2 className="mb-3 text-lg font-semibold text-slate-900">
+            Team ({coaches?.length ?? 0})
+          </h2>
           {coaches && coaches.length > 0 ? (
             <ul className="flex flex-col gap-2">
               {coaches.map((c) => (
@@ -148,7 +156,8 @@ export default async function CoachesPage({
                     {c.bio && <p className="text-xs text-slate-500">{c.bio}</p>}
                     <p className="mt-1 text-xs text-slate-400">
                       {Array.isArray(c.focus_areas) ? c.focus_areas.join(' · ') : ''}
-                      {c.hourly_rate_cents > 0 && ` · $${(c.hourly_rate_cents / 100).toFixed(2)}/hr`}
+                      {c.hourly_rate_cents > 0 &&
+                        ` · $${(c.hourly_rate_cents / 100).toFixed(2)}/hr`}
                     </p>
                   </div>
                 </li>
