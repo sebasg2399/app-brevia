@@ -2,9 +2,9 @@ import { redirect } from 'next/navigation';
 import { getCurrentSession } from '@ui/actions/auth';
 import { createSupabaseServerClient } from '@infra/supabase/client';
 import { CompanyId } from '@domain/value-objects/branded-id';
-import { signOutAction } from '@ui/actions/auth';
 import { inviteMemberAction, removeMemberAction } from '@ui/actions/members';
 import { SubmitButton } from '@ui/components/forms/submit-button';
+import { Nav } from '@ui/components/nav';
 
 interface MembersPageProps {
   searchParams: Promise<{ companyId?: string; error?: string; success?: string }>;
@@ -51,21 +51,13 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
     .order('created_at', { ascending: true });
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
+    <>
+      <Nav email={session.email.value} current="/settings/members" />
+      <main className="mx-auto max-w-3xl px-6 py-8">
+        <div className="mb-6">
           <h1 className="text-2xl font-semibold text-slate-900">{company?.name ?? 'Workspace'}</h1>
           <p className="text-sm text-slate-500">Manage members and invitations</p>
         </div>
-        <form action={signOutAction}>
-          <button
-            type="submit"
-            className="text-sm text-slate-500 hover:text-slate-900"
-          >
-            Sign out
-          </button>
-        </form>
-      </div>
 
       {params.error && (
         <div className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{params.error}</div>
@@ -141,6 +133,7 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
           })}
         </ul>
       </section>
-    </main>
+      </main>
+    </>
   );
 }
