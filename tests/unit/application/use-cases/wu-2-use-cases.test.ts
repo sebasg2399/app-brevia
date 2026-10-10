@@ -486,7 +486,6 @@ describe('Session lifecycle (Complete / Cancel)', () => {
   let h: Harness;
   let coach: Coach;
   let client: Client;
-  let sessionId: SessionId;
 
   beforeEach(async () => {
     h = await buildHarness();
@@ -510,7 +509,6 @@ describe('Session lifecycle (Complete / Cancel)', () => {
       now: h.clock.now(),
     });
     await h.clients.save(client);
-    sessionId = h.ids.newSessionId();
   });
 
   async function bookSession() {
@@ -572,6 +570,4 @@ describe('Session lifecycle (Complete / Cancel)', () => {
       sut.execute({ companyId: h.companyId, actorId: coachUserId, sessionId: session!.id }),
     ).rejects.toThrow(StateTransitionError);
   });
-
-  void sessionId; // suppress unused
 });
