@@ -4,9 +4,12 @@ import type { IdGenerator } from '@app/ports/id-generator';
 import type { CompanyRepository } from '@app/ports/company-repository';
 import type { UserRepository } from '@app/ports/user-repository';
 import type { MembershipRepository } from '@app/ports/membership-repository';
+import type { SubscriptionRepository } from '@app/ports/subscription-repository';
 import { Company } from '@domain/entities/company';
 import { User } from '@domain/entities/user';
 import { Membership } from '@domain/entities/membership';
+import { Subscription } from '@domain/entities/subscription';
+import { Plan } from '@domain/value-objects/plan';
 import { Email } from '@domain/value-objects/email';
 import { Slug } from '@domain/value-objects/slug';
 import type { CompanyId, UserId } from '@domain/value-objects/branded-id';
@@ -31,6 +34,7 @@ export class SignUp {
       users: UserRepository;
       companies: CompanyRepository;
       memberships: MembershipRepository;
+      subscriptions: SubscriptionRepository;
       ids: IdGenerator;
       clock: Clock;
     },
@@ -63,6 +67,13 @@ export class SignUp {
       now,
     });
     await this.deps.companies.save(company);
+
+    const subscription = Subscription.create({
+      companyId: company.id,
+      plan: Plan.free(),
+      now,
+    });
+    await this.deps.subscriptions.save(subscription);
 
     const membership = Membership.create({
       id: this.deps.ids.newMembershipId(),

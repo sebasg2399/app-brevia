@@ -1,12 +1,14 @@
 import { randomUUID } from 'node:crypto';
 import type { IdGenerator } from '@app/ports/id-generator';
 import {
+  AINoteId,
   ClientId,
   CoachId,
   CompanyId,
   InvitationId,
   MembershipId,
   SessionId,
+  TranscriptId,
   UserId,
 } from '@domain/value-objects/branded-id';
 
@@ -31,5 +33,11 @@ export class NodeIdGenerator implements IdGenerator {
   }
   newSessionId(): SessionId {
     return SessionId.fromString(randomUUID());
+  }
+  newTranscriptId(): TranscriptId {
+    return TranscriptId.fromString(randomUUID());
+  }
+  newAINoteId(): AINoteId {
+    return AINoteId.fromString(randomUUID());
   }
 }

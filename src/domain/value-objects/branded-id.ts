@@ -139,3 +139,43 @@ export class SessionId {
     return this.value;
   }
 }
+
+export class TranscriptId {
+  readonly _brand!: 'TranscriptId';
+  private constructor(public readonly value: string) {}
+
+  static fromString(raw: string): TranscriptId {
+    if (typeof raw !== 'string' || !UUID_REGEX.test(raw)) {
+      throw new Error(`Invalid UUID: ${raw}`);
+    }
+    return new TranscriptId(raw);
+  }
+
+  equals(other: TranscriptId): boolean {
+    return this.value === other.value;
+  }
+
+  toString(): string {
+    return this.value;
+  }
+}
+
+export class AINoteId {
+  readonly _brand!: 'AINoteId';
+  private constructor(public readonly value: string) {}
+
+  static fromString(raw: string): AINoteId {
+    if (typeof raw !== 'string' || !UUID_REGEX.test(raw)) {
+      throw new Error(`Invalid UUID: ${raw}`);
+    }
+    return new AINoteId(raw);
+  }
+
+  equals(other: AINoteId): boolean {
+    return this.value === other.value;
+  }
+
+  toString(): string {
+    return this.value;
+  }
+}
