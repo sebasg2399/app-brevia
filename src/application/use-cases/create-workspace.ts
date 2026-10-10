@@ -7,7 +7,7 @@ import { Company } from '@domain/entities/company';
 import { Membership } from '@domain/entities/membership';
 import { Slug } from '@domain/value-objects/slug';
 import { ConflictError, ForbiddenError, NotFoundError } from '@domain/errors/domain-error';
-import { UserId } from '@domain/value-objects/branded-id';
+import type { CompanyId, UserId } from '@domain/value-objects/branded-id';
 
 export interface CreateWorkspaceInput {
   readonly ownerId: UserId;
@@ -15,7 +15,7 @@ export interface CreateWorkspaceInput {
 }
 
 export interface CreateWorkspaceResult {
-  readonly companyId: ReturnType<typeof UserId.fromString>;
+  readonly companyId: CompanyId;
 }
 
 export class CreateWorkspace {

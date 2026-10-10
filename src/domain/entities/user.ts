@@ -1,5 +1,5 @@
-import { UserId } from '@domain/value-objects/branded-id';
-import { Email } from '@domain/value-objects/email';
+import type { UserId } from '@domain/value-objects/branded-id';
+import type { Email } from '@domain/value-objects/email';
 import { ValidationError } from '@domain/errors/domain-error';
 
 const NAME_MAX_LENGTH = 120;

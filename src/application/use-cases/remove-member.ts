@@ -1,5 +1,5 @@
 import type { MembershipRepository } from '@app/ports/membership-repository';
-import { CompanyId, MembershipId, UserId } from '@domain/value-objects/branded-id';
+import type { CompanyId, MembershipId, UserId } from '@domain/value-objects/branded-id';
 import { ForbiddenError, NotFoundError } from '@domain/errors/domain-error';
 
 export interface RemoveMemberInput {

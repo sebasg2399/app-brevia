@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { Company } from '@domain/entities/company';
-import { CompanyId } from '@domain/value-objects/branded-id';
+import { CompanyId, UserId } from '@domain/value-objects/branded-id';
 import { Slug } from '@domain/value-objects/slug';
 import { ValidationError } from '@domain/errors/domain-error';
 
 const fixedId = CompanyId.fromString('12345678-1234-4234-8234-123456789012');
-const ownerId = CompanyId.fromString('22345678-1234-4234-8234-123456789012');
+const ownerId = UserId.fromString('22345678-1234-4234-8234-123456789012');
 
 describe('Company', () => {
   const now = '2026-01-01T00:00:00.000Z';

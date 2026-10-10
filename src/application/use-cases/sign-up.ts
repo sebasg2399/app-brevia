@@ -9,6 +9,7 @@ import { User } from '@domain/entities/user';
 import { Membership } from '@domain/entities/membership';
 import { Email } from '@domain/value-objects/email';
 import { Slug } from '@domain/value-objects/slug';
+import type { CompanyId, UserId } from '@domain/value-objects/branded-id';
 import { ConflictError } from '@domain/errors/domain-error';
 
 export interface SignUpInput {
@@ -18,12 +19,10 @@ export interface SignUpInput {
 }
 
 export interface SignUpResult {
-  readonly userId: ReturnType<typeof UserIdCtor>;
-  readonly companyId: ReturnType<typeof CompanyIdCtor>;
+  readonly userId: UserId;
+  readonly companyId: CompanyId;
   readonly session: AuthSession | null;
 }
-
-import { UserId as UserIdCtor, CompanyId as CompanyIdCtor } from '@domain/value-objects/branded-id';
 
 export class SignUp {
   constructor(

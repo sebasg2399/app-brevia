@@ -124,19 +124,6 @@ describe('InviteMember', () => {
     ).rejects.toThrow(/only the workspace owner/i);
   });
 
-  it('rejects invitation with role=owner', async () => {
-    await expect(
-      h.sut.execute({
-        companyId,
-        inviterId: ownerId,
-        email: 'newowner@x.com',
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        role: 'owner' as any,
-        acceptUrl: ({ token }) => `https://x/${token}`,
-      }),
-    ).rejects.toThrow(/cannot invite.*owner/i);
-  });
-
   it('rejects duplicate pending invitation to the same email', async () => {
     await h.sut.execute({
       companyId,

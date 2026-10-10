@@ -1,5 +1,5 @@
-import { CompanyId, UserId } from '@domain/value-objects/branded-id';
-import { Slug } from '@domain/value-objects/slug';
+import type { CompanyId, UserId } from '@domain/value-objects/branded-id';
+import type { Slug } from '@domain/value-objects/slug';
 import { ValidationError } from '@domain/errors/domain-error';
 
 const NAME_MAX_LENGTH = 80;

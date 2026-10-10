@@ -1,4 +1,4 @@
-import {
+import type {
   CompanyId,
   MembershipId,
   UserId,

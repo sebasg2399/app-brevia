@@ -21,7 +21,8 @@
       "@domain/*": ["./src/domain/*"],
       "@infra/*": ["./src/infrastructure/*"],
       "@ui/*": ["./src/presentation/*"],
-      "@components/*": ["./src/presentation/components/*"]
+      "@components/*": ["./src/presentation/components/*"],
+      "@shared/*": ["./src/shared/*"]
     },
     "types": ["@testing-library/jest-dom"]
   },

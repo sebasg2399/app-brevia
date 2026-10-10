@@ -8,7 +8,7 @@ import type { IdGenerator } from '@app/ports/id-generator';
 import type { Clock } from '@app/ports/clock';
 import { User } from '@domain/entities/user';
 import { Membership } from '@domain/entities/membership';
-import { Email } from '@domain/value-objects/email';
+import type { CompanyId, UserId } from '@domain/value-objects/branded-id';
 import { ConflictError, NotFoundError, ValidationError } from '@domain/errors/domain-error';
 
 export interface AcceptInvitationInput {
@@ -17,12 +17,10 @@ export interface AcceptInvitationInput {
 }
 
 export interface AcceptInvitationResult {
-  readonly userId: ReturnType<typeof UserIdCtor>;
-  readonly companyId: ReturnType<typeof CompanyIdCtor>;
+  readonly userId: UserId;
+  readonly companyId: CompanyId;
   readonly session: Awaited<ReturnType<AuthGateway['signUp']>>['session'];
 }
-
-import { UserId as UserIdCtor, CompanyId as CompanyIdCtor } from '@domain/value-objects/branded-id';
 
 export class AcceptInvitation {
   constructor(

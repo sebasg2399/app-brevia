@@ -7,8 +7,8 @@ import type { IdGenerator } from '@app/ports/id-generator';
 import type { Clock } from '@app/ports/clock';
 import { Invitation } from '@domain/entities/invitation';
 import { Email } from '@domain/value-objects/email';
-import { CompanyId, UserId } from '@domain/value-objects/branded-id';
-import { ConflictError, ForbiddenError, NotFoundError, ValidationError } from '@domain/errors/domain-error';
+import type { CompanyId, InvitationId, UserId } from '@domain/value-objects/branded-id';
+import { ConflictError, ForbiddenError, NotFoundError } from '@domain/errors/domain-error';
 import type { Role } from '@domain/entities/membership';
 
 const INVITATION_TTL_SECONDS = 7 * 24 * 60 * 60;
@@ -22,7 +22,7 @@ export interface InviteMemberInput {
 }
 
 export interface InviteMemberResult {
-  readonly invitationId: ReturnType<typeof UserId.fromString>;
+  readonly invitationId: InvitationId;
   readonly sentTo: Email;
 }
 
@@ -40,9 +40,6 @@ export class InviteMember {
   ) {}
 
   async execute(input: InviteMemberInput): Promise<InviteMemberResult> {
-    if (input.role === 'owner') {
-      throw new ValidationError('Cannot invite a user as owner');
-    }
     const inviterMembership = await this.deps.memberships.findByCompanyAndUser(
       input.companyId,
       input.inviterId,

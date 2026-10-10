@@ -2,7 +2,6 @@ import type { AuthGateway, AuthSession } from '@app/ports/auth-gateway';
 import type { CompanyRepository } from '@app/ports/company-repository';
 import type { MembershipRepository } from '@app/ports/membership-repository';
 import { Email } from '@domain/value-objects/email';
-import { NotFoundError } from '@domain/errors/domain-error';
 import type { CompanyId } from '@domain/value-objects/branded-id';
 
 export interface SignInInput {
