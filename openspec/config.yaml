@@ -1,0 +1,50 @@
+schema: spec-driven
+
+context: |
+  Tech stack: Next.js 15 (App Router) + React 19 + TypeScript strict. Supabase (Postgres + Auth + RLS + Storage) for DB and auth. Stripe Billing for subscriptions (with trial + webhooks). Anthropic Claude API for AI session notes. Tailwind CSS for styling. Vitest (unit/integration) + Playwright (E2E). ESLint + Prettier + tsc --noEmit.
+  Architecture: Clean/Hexagonal, layered in src/. Domain has zero deps on outer layers. Application defines ports (interfaces); Infrastructure implements them. Presentation via Next.js server actions + React components.
+  Payments: Stripe Billing subscriptions, 7-day trial, webhooks for state changes (created/updated/canceled/payment_failed). NO Stripe Connect in MVP.
+  Auth: Supabase Auth (email + password + magic link). Roles: owner, coach, client. Company-scoped RLS.
+  Multi-tenancy: companies (workspaces) own coaches; clients belong to a company via invitation. Schema shared, RLS by company_id.
+  AI: Anthropic Claude (claude-sonnet-4-5) for transcript → summary + action items + next-session brief. Structured output via tool use. Quotas per plan.
+  Testing: Vitest for unit + integration; Playwright for E2E. Coverage via @vitest/coverage-v8. Strict TDD mode enabled.
+  Plans: Free (read-only, 5 AI notes/month), Pro ($29/mo, 50 notes/month), Team ($99/mo per company, 500 notes/month, multi-coach).
+
+strict_tdd: true
+
+rules:
+  proposal:
+    - Keep MVP scope tight: subscriptions + AI session notes + company/coach/client model
+    - Reject features that add no domain value (custom analytics, marketing site, etc.)
+    - Identify affected domain entities, use cases, ports
+    - Include rollback considerations for schema migrations
+  specs:
+    - Use Given/When/Then for every scenario
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+    - Money stored as integer minor units (cents); never floats
+    - Every Stripe webhook handler MUST be idempotent (event.id dedupe)
+    - Every entity write MUST be RLS-checked at the DB, not only at the app layer
+  design:
+    - Show dependency direction explicitly (domain ← application ← presentation ← infrastructure)
+    - Document the subscription state machine (trial → active → past_due → canceled)
+    - Document AI generation flow with sequence diagram (upload transcript → AI call → store structured notes)
+    - Record architecture decisions with rationale (ADRs)
+  tasks:
+    - Group by phase (1-foundations, 2-domain, 3-application, 4-infrastructure, 5-presentation, 6-payments, 7-ai, 8-hardening)
+    - Use hierarchical numbering (1.1, 1.2, ...)
+    - Keep tasks small enough to complete in one session (<4h each)
+    - Tests MUST be written before implementation when strict_tdd is true
+  apply:
+    - Follow Clean Architecture: domain has no React/Next/Supabase imports
+    - Validate all input with zod at the boundary
+    - Use server actions for mutations; server components for reads
+    - No business logic in React components
+  verify:
+    - Run pnpm typecheck, pnpm lint, pnpm test, pnpm test:e2e
+    - Compare implementation against every spec scenario in the change
+    - Verify RLS policies cover all tables
+    - Smoke-test Stripe webhook locally with stripe CLI
+  archive:
+    - Sync delta specs to openspec/specs/
+    - Warn before merging destructive schema changes
+    - Capture key ADRs in openspec/specs/decisions.md

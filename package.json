@@ -1,0 +1,61 @@
+{
+  "name": "app-brevia",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Brevia - AI Coaching Platform SaaS",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "next": "^15.0.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@supabase/supabase-js": "^2.45.6",
+    "@supabase/ssr": "^0.5.2",
+    "stripe": "^17.3.1",
+    "@stripe/stripe-js": "^4.10.0",
+    "zod": "^3.23.8",
+    "react-hook-form": "^7.53.1",
+    "@hookform/resolvers": "^3.9.0",
+    "@anthropic-ai/sdk": "^0.32.1",
+    "date-fns": "^4.1.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.7",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.6.3",
+    "tailwindcss": "^3.4.14",
+    "postcss": "^8.4.47",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.13.0",
+    "eslint-config-next": "^15.0.3",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8",
+    "vitest": "^2.1.4",
+    "@vitejs/plugin-react": "^4.3.3",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/jest-dom": "^6.6.2",
+    "@testing-library/user-event": "^14.5.2",
+    "@playwright/test": "^1.48.2",
+    "@vitest/coverage-v8": "^2.1.4",
+    "jsdom": "^25.0.1"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.12.1"
+}
