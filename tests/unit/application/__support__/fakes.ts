@@ -7,16 +7,22 @@ import type { InvitationRepository } from '@app/ports/invitation-repository';
 import type { CoachRepository } from '@app/ports/coach-repository';
 import type { ClientRepository } from '@app/ports/client-repository';
 import type { SessionRepository } from '@app/ports/session-repository';
+import type { TranscriptRepository } from '@app/ports/transcript-repository';
+import type { AINotesRepository } from '@app/ports/ai-notes-repository';
+import type { SubscriptionRepository } from '@app/ports/subscription-repository';
+import type { AIGateway, AIGatewayGenerateInput, AINotesDraft } from '@app/ports/ai-gateway';
 import type { EmailGateway } from '@app/ports/email-gateway';
 import type { TokenHasher } from '@app/ports/token-hasher';
 import type { IdGenerator } from '@app/ports/id-generator';
 import {
+  AINoteId,
   ClientId,
   CoachId,
   CompanyId,
   InvitationId,
   MembershipId,
   SessionId,
+  TranscriptId,
   UserId,
 } from '@domain/value-objects/branded-id';
 import type { Company } from '@domain/entities/company';
@@ -26,6 +32,9 @@ import type { Invitation } from '@domain/entities/invitation';
 import type { Coach } from '@domain/entities/coach';
 import type { Client } from '@domain/entities/client';
 import type { Session, SessionStatus } from '@domain/entities/session';
+import type { Transcript } from '@domain/entities/transcript';
+import type { AINotes } from '@domain/entities/ai-notes';
+import type { Subscription } from '@domain/entities/subscription';
 import type { Email } from '@domain/value-objects/email';
 import type { Slug } from '@domain/value-objects/slug';
 import { ConflictError, NotFoundError, ValidationError } from '@domain/errors/domain-error';
@@ -68,6 +77,12 @@ export class FakeIdGenerator implements IdGenerator {
   }
   newSessionId(): SessionId {
     return SessionId.fromString(uuidv4());
+  }
+  newTranscriptId(): TranscriptId {
+    return TranscriptId.fromString(uuidv4());
+  }
+  newAINoteId(): AINoteId {
+    return AINoteId.fromString(uuidv4());
   }
 }
 
@@ -252,6 +267,91 @@ export class InMemorySessionRepository implements SessionRepository {
   }
   async save(session: Session): Promise<void> {
     this.store.set(session.id.toString(), session);
+  }
+}
+
+export class InMemoryTranscriptRepository implements TranscriptRepository {
+  private store = new Map<string, Transcript>();
+  async findById(id: TranscriptId): Promise<Transcript | null> {
+    return this.store.get(id.toString()) ?? null;
+  }
+  async findBySessionId(sessionId: SessionId): Promise<Transcript | null> {
+    for (const t of this.store.values()) {
+      if (t.isForSession(sessionId)) return t;
+    }
+    return null;
+  }
+  async save(transcript: Transcript): Promise<void> {
+    this.store.set(transcript.id.toString(), transcript);
+  }
+  async countByCompanyInMonth(): Promise<number> {
+    return 0;
+  }
+  async countByCompanyInMonthWithNotes(): Promise<number> {
+    return 0;
+  }
+}
+
+export class InMemoryAINotesRepository implements AINotesRepository {
+  private store = new Map<string, AINotes>();
+  async findById(id: AINoteId): Promise<AINotes | null> {
+    return this.store.get(id.toString()) ?? null;
+  }
+  async findByTranscriptId(transcriptId: TranscriptId): Promise<AINotes | null> {
+    for (const n of this.store.values()) {
+      if (n.isForTranscript(transcriptId)) return n;
+    }
+    return null;
+  }
+  async save(notes: AINotes): Promise<void> {
+    this.store.set(notes.id.toString(), notes);
+  }
+  async countGeneratedByCompanyInMonth(companyId: CompanyId, yearMonth: string): Promise<number> {
+    let count = 0;
+    for (const n of this.store.values()) {
+      if (
+        n.belongsToCompany(companyId) &&
+        n.status === 'ready' &&
+        n.createdAt.startsWith(yearMonth)
+      ) {
+        count++;
+      }
+    }
+    return count;
+  }
+}
+
+export class InMemorySubscriptionRepository implements SubscriptionRepository {
+  private store = new Map<string, Subscription>();
+  async findByCompanyId(companyId: CompanyId): Promise<Subscription | null> {
+    return this.store.get(companyId.toString()) ?? null;
+  }
+  async save(subscription: Subscription): Promise<void> {
+    this.store.set(subscription.companyId.toString(), subscription);
+  }
+}
+
+export class FakeAIGateway implements AIGateway {
+  public callCount = 0;
+  public failNTimes = 0;
+  public draftOverride: Partial<AINotesDraft> | null = null;
+  async generateNotes(input: AIGatewayGenerateInput): Promise<AINotesDraft> {
+    this.callCount++;
+    if (this.failNTimes > 0) {
+      this.failNTimes--;
+      throw new Error('AI generation failed (simulated)');
+    }
+    return {
+      summary: this.draftOverride?.summary ?? 'Summary based on the transcript.',
+      actionItems: this.draftOverride?.actionItems ?? [
+        { title: 'Follow up on the main theme', dueDate: null },
+      ],
+      nextSessionBrief:
+        this.draftOverride?.nextSessionBrief ?? 'Focus on outcomes next time.',
+      model: this.draftOverride?.model ?? 'claude-sonnet-4-5',
+      rawResponse:
+        this.draftOverride?.rawResponse ?? JSON.stringify({ length: input.transcript.length }),
+    };
   }
 }
 
