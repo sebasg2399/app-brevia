@@ -1,5 +1,5 @@
 import type { CompanyId } from '@domain/value-objects/branded-id';
-import { Plan } from '@domain/value-objects/plan';
+import type { Plan } from '@domain/value-objects/plan';
 import { ValidationError } from '@domain/errors/domain-error';
 
 export type SubscriptionStatus = 'active' | 'past_due' | 'canceled' | 'trialing';

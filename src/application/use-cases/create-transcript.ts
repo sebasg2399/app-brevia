@@ -9,8 +9,7 @@ import type { IdGenerator } from '@app/ports/id-generator';
 import type { Clock } from '@app/ports/clock';
 import { Transcript } from '@domain/entities/transcript';
 import { AINotes } from '@domain/entities/ai-notes';
-import { Plan } from '@domain/value-objects/plan';
-import type { CompanyId, SessionId, UserId } from '@domain/value-objects/branded-id';
+import type { CompanyId, SessionId, UserId, TranscriptId, AINoteId } from '@domain/value-objects/branded-id';
 import {
   ConflictError,
   ForbiddenError,
@@ -28,8 +27,8 @@ export interface CreateTranscriptInput {
 }
 
 export interface CreateTranscriptResult {
-  readonly transcriptId: ReturnType<typeof import('@domain/value-objects/branded-id').TranscriptId.fromString>;
-  readonly notesId: ReturnType<typeof import('@domain/value-objects/branded-id').AINoteId.fromString>;
+  readonly transcriptId: TranscriptId;
+  readonly notesId: AINoteId;
   readonly notesStatus: 'pending' | 'ready' | 'failed';
   readonly summary?: string;
   readonly actionItems?: ReadonlyArray<unknown>;
@@ -136,7 +135,7 @@ export class CreateTranscript {
   private async callAIWithRetry(
     notes: AINotes,
     text: string,
-    now: string,
+    _now: string,
   ): Promise<{ notesStatus: 'pending' | 'ready' | 'failed'; summary?: string; actionItems?: ReadonlyArray<unknown>; nextSessionBrief?: string; errorMessage?: string }> {
     const maxAttempts = 2;
     let lastError: unknown = null;
@@ -170,5 +169,4 @@ export class CreateTranscript {
   }
 }
 
-// Plan import referenced to avoid unused warning if removed from quotas
-void Plan;
+// Plan import removed — was only used to suppress lint warning on removed import.

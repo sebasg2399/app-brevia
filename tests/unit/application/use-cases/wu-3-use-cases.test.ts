@@ -12,6 +12,7 @@ import { Transcript } from '@domain/entities/transcript';
 import { AINotes } from '@domain/entities/ai-notes';
 import { Plan } from '@domain/value-objects/plan';
 import { Email } from '@domain/value-objects/email';
+import { ActionItem } from '@domain/value-objects/action-item';
 import {
   ClientId,
   CoachId,
@@ -278,7 +279,7 @@ describe('CreateTranscript', () => {
       });
       n.markReady({
         summary: 'a',
-        actionItems: [{ title: 'x', dueDate: null }],
+        actionItems: [ActionItem.create({ title: 'x', dueDate: null })],
         nextSessionBrief: 'b',
         model: 'm',
         rawResponse: '{}',
@@ -407,7 +408,6 @@ describe('RetryNotes', () => {
       notes: h.notes,
       subscriptions: h.subscriptions,
       memberships: h.memberships,
-      ai: h.ai,
       clock: h.clock,
     });
     const out = await sut.execute({ companyId, actorId: ownerId, notesId: notes.id });
@@ -433,7 +433,7 @@ describe('RetryNotes', () => {
     });
     notes.markReady({
       summary: 'a',
-      actionItems: [{ title: 'x', dueDate: null }],
+      actionItems: [ActionItem.create({ title: 'x', dueDate: null })],
       nextSessionBrief: 'b',
       model: 'm',
       rawResponse: '{}',
@@ -445,7 +445,6 @@ describe('RetryNotes', () => {
       notes: h.notes,
       subscriptions: h.subscriptions,
       memberships: h.memberships,
-      ai: h.ai,
       clock: h.clock,
     });
     await expect(
@@ -482,7 +481,7 @@ describe('RetryNotes', () => {
       });
       n.markReady({
         summary: 'a',
-        actionItems: [{ title: 'x', dueDate: null }],
+        actionItems: [ActionItem.create({ title: 'x', dueDate: null })],
         nextSessionBrief: 'b',
         model: 'm',
         rawResponse: '{}',
@@ -495,7 +494,6 @@ describe('RetryNotes', () => {
       notes: h.notes,
       subscriptions: h.subscriptions,
       memberships: h.memberships,
-      ai: h.ai,
       clock: h.clock,
     });
     await expect(

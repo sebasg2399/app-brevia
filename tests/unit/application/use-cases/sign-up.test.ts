@@ -15,6 +15,7 @@ import {
   FakeTokenHasher,
   InMemoryCompanyRepository,
   InMemoryMembershipRepository,
+  InMemorySubscriptionRepository,
   InMemoryUserRepository,
 } from '../__support__/fakes';
 
@@ -31,12 +32,13 @@ function buildHarness(): Harness {
   const users = new InMemoryUserRepository();
   const companies = new InMemoryCompanyRepository();
   const memberships = new InMemoryMembershipRepository();
+  const subscriptions = new InMemorySubscriptionRepository();
   const ids: IdGenerator = new FakeIdGenerator();
   const clock: Clock = new FakeClock('2026-01-01T00:00:00.000Z');
   const email: EmailGateway = { send: async () => {} };
   const tokens: TokenHasher = new FakeTokenHasher();
 
-  const sut = new SignUp({ auth, users, companies, memberships, ids, clock });
+  const sut = new SignUp({ auth, users, companies, memberships, subscriptions, ids, clock });
   return { sut, auth, users, companies, memberships };
 }
 

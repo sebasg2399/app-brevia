@@ -37,6 +37,7 @@ import type { AINotes } from '@domain/entities/ai-notes';
 import type { Subscription } from '@domain/entities/subscription';
 import type { Email } from '@domain/value-objects/email';
 import type { Slug } from '@domain/value-objects/slug';
+import { ActionItem } from '@domain/value-objects/action-item';
 import { ConflictError, NotFoundError, ValidationError } from '@domain/errors/domain-error';
 import { randomUUID } from 'node:crypto';
 
@@ -344,7 +345,7 @@ export class FakeAIGateway implements AIGateway {
     return {
       summary: this.draftOverride?.summary ?? 'Summary based on the transcript.',
       actionItems: this.draftOverride?.actionItems ?? [
-        { title: 'Follow up on the main theme', dueDate: null },
+        ActionItem.create({ title: 'Follow up on the main theme', dueDate: null }),
       ],
       nextSessionBrief:
         this.draftOverride?.nextSessionBrief ?? 'Focus on outcomes next time.',

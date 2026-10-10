@@ -1,9 +1,8 @@
 import type { AINotesRepository } from '@app/ports/ai-notes-repository';
 import type { SubscriptionRepository } from '@app/ports/subscription-repository';
-import type { AIGateway } from '@app/ports/ai-gateway';
 import type { MembershipRepository } from '@app/ports/membership-repository';
 import type { Clock } from '@app/ports/clock';
-import { AINotes } from '@domain/entities/ai-notes';
+import type { AINotes } from '@domain/entities/ai-notes';
 import type { AINoteId, CompanyId, UserId } from '@domain/value-objects/branded-id';
 import {
   ForbiddenError,
@@ -19,7 +18,6 @@ export class RetryNotes {
       notes: AINotesRepository;
       subscriptions: SubscriptionRepository;
       memberships: MembershipRepository;
-      ai: AIGateway;
       clock: Clock;
     },
   ) {}
