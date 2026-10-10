@@ -4,19 +4,28 @@ import type { CompanyRepository } from '@app/ports/company-repository';
 import type { UserRepository } from '@app/ports/user-repository';
 import type { MembershipRepository } from '@app/ports/membership-repository';
 import type { InvitationRepository } from '@app/ports/invitation-repository';
+import type { CoachRepository } from '@app/ports/coach-repository';
+import type { ClientRepository } from '@app/ports/client-repository';
+import type { SessionRepository } from '@app/ports/session-repository';
 import type { EmailGateway } from '@app/ports/email-gateway';
 import type { TokenHasher } from '@app/ports/token-hasher';
 import type { IdGenerator } from '@app/ports/id-generator';
 import {
+  ClientId,
+  CoachId,
   CompanyId,
   InvitationId,
   MembershipId,
+  SessionId,
   UserId,
 } from '@domain/value-objects/branded-id';
 import type { Company } from '@domain/entities/company';
 import type { User } from '@domain/entities/user';
 import type { Membership, Role } from '@domain/entities/membership';
 import type { Invitation } from '@domain/entities/invitation';
+import type { Coach } from '@domain/entities/coach';
+import type { Client } from '@domain/entities/client';
+import type { Session, SessionStatus } from '@domain/entities/session';
 import type { Email } from '@domain/value-objects/email';
 import type { Slug } from '@domain/value-objects/slug';
 import { ConflictError, NotFoundError, ValidationError } from '@domain/errors/domain-error';
@@ -50,6 +59,15 @@ export class FakeIdGenerator implements IdGenerator {
   }
   newInvitationId(): InvitationId {
     return InvitationId.fromString(uuidv4());
+  }
+  newCoachId(): CoachId {
+    return CoachId.fromString(uuidv4());
+  }
+  newClientId(): ClientId {
+    return ClientId.fromString(uuidv4());
+  }
+  newSessionId(): SessionId {
+    return SessionId.fromString(uuidv4());
   }
 }
 
@@ -158,6 +176,82 @@ export class InMemoryInvitationRepository implements InvitationRepository {
       }
     }
     return removed;
+  }
+}
+
+export class InMemoryCoachRepository implements CoachRepository {
+  private store = new Map<string, Coach>();
+  async findById(id: CoachId): Promise<Coach | null> {
+    return this.store.get(id.toString()) ?? null;
+  }
+  async findByUserId(userId: UserId): Promise<Coach | null> {
+    for (const c of this.store.values()) {
+      if (c.userId.equals(userId)) return c;
+    }
+    return null;
+  }
+  async listByCompany(companyId: CompanyId): Promise<ReadonlyArray<Coach>> {
+    return Array.from(this.store.values()).filter((c) => c.belongsToCompany(companyId));
+  }
+  async save(coach: Coach): Promise<void> {
+    this.store.set(coach.id.toString(), coach);
+  }
+}
+
+export class InMemoryClientRepository implements ClientRepository {
+  private store = new Map<string, Client>();
+  async findById(id: ClientId): Promise<Client | null> {
+    return this.store.get(id.toString()) ?? null;
+  }
+  async findActiveByCompanyAndEmail(companyId: CompanyId, email: Email): Promise<Client | null> {
+    for (const c of this.store.values()) {
+      if (
+        c.belongsToCompany(companyId) &&
+        !c.isDeleted() &&
+        c.email?.equals(email)
+      ) {
+        return c;
+      }
+    }
+    return null;
+  }
+  async listByCompany(companyId: CompanyId, includeDeleted = false): Promise<ReadonlyArray<Client>> {
+    return Array.from(this.store.values()).filter(
+      (c) => c.belongsToCompany(companyId) && (includeDeleted || !c.isDeleted()),
+    );
+  }
+  async save(client: Client): Promise<void> {
+    this.store.set(client.id.toString(), client);
+  }
+}
+
+export class InMemorySessionRepository implements SessionRepository {
+  private store = new Map<string, Session>();
+  async findById(id: SessionId): Promise<Session | null> {
+    return this.store.get(id.toString()) ?? null;
+  }
+  async listByCompany(companyId: CompanyId, status?: SessionStatus): Promise<ReadonlyArray<Session>> {
+    return Array.from(this.store.values()).filter(
+      (s) => s.belongsToCompany(companyId) && (status === undefined || s.status === status),
+    );
+  }
+  async listByCoach(coachId: CoachId, status?: SessionStatus): Promise<ReadonlyArray<Session>> {
+    return Array.from(this.store.values()).filter(
+      (s) => s.coachId.equals(coachId) && (status === undefined || s.status === status),
+    );
+  }
+  async listByClient(clientId: ClientId, status?: SessionStatus): Promise<ReadonlyArray<Session>> {
+    return Array.from(this.store.values()).filter(
+      (s) => s.clientId.equals(clientId) && (status === undefined || s.status === status),
+    );
+  }
+  async listByCoachAndClient(coachId: CoachId, clientId: ClientId): Promise<ReadonlyArray<Session>> {
+    return Array.from(this.store.values()).filter(
+      (s) => s.coachId.equals(coachId) && s.clientId.equals(clientId),
+    );
+  }
+  async save(session: Session): Promise<void> {
+    this.store.set(session.id.toString(), session);
   }
 }
 

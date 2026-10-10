@@ -4,3 +4,7 @@ export { Membership } from './membership';
 export type { Role } from './membership';
 export { Invitation } from './invitation';
 export type { InvitationStatus } from './invitation';
+export { Coach } from './coach';
+export { Client } from './client';
+export { Session } from './session';
+export type { SessionStatus } from './session';

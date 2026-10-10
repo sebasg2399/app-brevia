@@ -79,3 +79,63 @@ export class InvitationId {
     return this.value;
   }
 }
+
+export class CoachId {
+  readonly _brand!: 'CoachId';
+  private constructor(public readonly value: string) {}
+
+  static fromString(raw: string): CoachId {
+    if (typeof raw !== 'string' || !UUID_REGEX.test(raw)) {
+      throw new Error(`Invalid UUID: ${raw}`);
+    }
+    return new CoachId(raw);
+  }
+
+  equals(other: CoachId): boolean {
+    return this.value === other.value;
+  }
+
+  toString(): string {
+    return this.value;
+  }
+}
+
+export class ClientId {
+  readonly _brand!: 'ClientId';
+  private constructor(public readonly value: string) {}
+
+  static fromString(raw: string): ClientId {
+    if (typeof raw !== 'string' || !UUID_REGEX.test(raw)) {
+      throw new Error(`Invalid UUID: ${raw}`);
+    }
+    return new ClientId(raw);
+  }
+
+  equals(other: ClientId): boolean {
+    return this.value === other.value;
+  }
+
+  toString(): string {
+    return this.value;
+  }
+}
+
+export class SessionId {
+  readonly _brand!: 'SessionId';
+  private constructor(public readonly value: string) {}
+
+  static fromString(raw: string): SessionId {
+    if (typeof raw !== 'string' || !UUID_REGEX.test(raw)) {
+      throw new Error(`Invalid UUID: ${raw}`);
+    }
+    return new SessionId(raw);
+  }
+
+  equals(other: SessionId): boolean {
+    return this.value === other.value;
+  }
+
+  toString(): string {
+    return this.value;
+  }
+}
