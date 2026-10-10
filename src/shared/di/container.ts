@@ -1,8 +1,5 @@
 import 'server-only';
-import {
-  createSupabaseServerClient,
-  createSupabaseServiceClient,
-} from '@infra/supabase/client';
+import { createSupabaseServerClient, createSupabaseServiceClient } from '@infra/supabase/client';
 import { SupabaseCompanyRepository } from '@infra/supabase/repos/company-repository';
 import { SupabaseUserRepository } from '@infra/supabase/repos/user-repository';
 import { SupabaseMembershipRepository } from '@infra/supabase/repos/membership-repository';
@@ -105,8 +102,23 @@ export async function getUseCases(): Promise<UseCases> {
   return {
     signUp: new SignUp({ auth, users, companies, memberships, subscriptions, ids, clock }),
     signIn: new SignIn({ auth, memberships, companies }),
-    createWorkspace: new CreateWorkspace({ users, companies, memberships, subscriptions, ids, clock }),
-    inviteMember: new InviteMember({ companies, memberships, invitations, email, tokens, ids, clock }),
+    createWorkspace: new CreateWorkspace({
+      users,
+      companies,
+      memberships,
+      subscriptions,
+      ids,
+      clock,
+    }),
+    inviteMember: new InviteMember({
+      companies,
+      memberships,
+      invitations,
+      email,
+      tokens,
+      ids,
+      clock,
+    }),
     acceptInvitation: new AcceptInvitation({
       auth,
       users,
@@ -154,7 +166,8 @@ export async function getUseCases(): Promise<UseCases> {
 }
 
 export async function getWebhookHandlers(): Promise<WebhookHandlers> {
-  const HandleStripeWebhook = (await import('@app/use-cases/handle-stripe-webhook')).HandleStripeWebhook;
+  const HandleStripeWebhook = (await import('@app/use-cases/handle-stripe-webhook'))
+    .HandleStripeWebhook;
   const svc = createSupabaseServiceClient();
   const subscriptions = new SupabaseSubscriptionRepository(svc);
   const events: WebhookEventRepository = new SupabaseWebhookEventRepository(svc);

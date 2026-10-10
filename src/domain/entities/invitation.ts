@@ -1,8 +1,4 @@
-import type {
-  CompanyId,
-  InvitationId,
-  UserId,
-} from '@domain/value-objects/branded-id';
+import type { CompanyId, InvitationId, UserId } from '@domain/value-objects/branded-id';
 import type { Email } from '@domain/value-objects/email';
 import { ConflictError, ValidationError } from '@domain/errors/domain-error';
 import type { Role } from './membership';

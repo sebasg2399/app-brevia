@@ -52,7 +52,10 @@ Use the save_session_notes tool exactly once. Do not return any other text.`;
 export class AnthropicAIGateway implements AIGateway {
   private readonly client: Anthropic;
 
-  constructor(apiKey: string, private readonly defaultModel = 'claude-sonnet-4-5') {
+  constructor(
+    apiKey: string,
+    private readonly defaultModel = 'claude-sonnet-4-5',
+  ) {
     this.client = new Anthropic({ apiKey });
   }
 

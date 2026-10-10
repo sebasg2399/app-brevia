@@ -55,7 +55,11 @@ export class Subscription {
     this.props = { ...this.props, status, updatedAt: now };
   }
 
-  updateBillingPeriod(currentPeriodEnd: string | null, trialEndsAt: string | null, now: string): void {
+  updateBillingPeriod(
+    currentPeriodEnd: string | null,
+    trialEndsAt: string | null,
+    now: string,
+  ): void {
     this.props = { ...this.props, currentPeriodEnd, trialEndsAt, updatedAt: now };
   }
 

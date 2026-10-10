@@ -31,7 +31,10 @@ export class SupabaseSessionRepository implements SessionRepository {
     return this.toDomain(data);
   }
 
-  async listByCompany(companyId: CompanyId, status?: SessionStatus): Promise<ReadonlyArray<Session>> {
+  async listByCompany(
+    companyId: CompanyId,
+    status?: SessionStatus,
+  ): Promise<ReadonlyArray<Session>> {
     let query = this.db.from('sessions').select('*').eq('company_id', companyId.toString());
     if (status) query = query.eq('status', status);
     const { data, error } = await query;
@@ -55,7 +58,10 @@ export class SupabaseSessionRepository implements SessionRepository {
     return data.map((row) => this.toDomain(row as SessionRow));
   }
 
-  async listByCoachAndClient(coachId: CoachId, clientId: ClientId): Promise<ReadonlyArray<Session>> {
+  async listByCoachAndClient(
+    coachId: CoachId,
+    clientId: ClientId,
+  ): Promise<ReadonlyArray<Session>> {
     const { data, error } = await this.db
       .from('sessions')
       .select('*')

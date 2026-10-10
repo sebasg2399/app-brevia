@@ -28,10 +28,7 @@ export class CreateClient {
   ) {}
 
   async execute(input: CreateClientInput) {
-    const actor = await this.deps.memberships.findByCompanyAndUser(
-      input.companyId,
-      input.actorId,
-    );
+    const actor = await this.deps.memberships.findByCompanyAndUser(input.companyId, input.actorId);
     if (!actor || (!actor.isOwner() && !actor.isCoach())) {
       throw new ForbiddenError('Only owners or coaches can add clients');
     }
@@ -40,12 +37,11 @@ export class CreateClient {
 
     const email = input.email ? Email.create(input.email) : null;
     if (email) {
-      const existing = await this.deps.clients.findActiveByCompanyAndEmail(
-        input.companyId,
-        email,
-      );
+      const existing = await this.deps.clients.findActiveByCompanyAndEmail(input.companyId, email);
       if (existing) {
-        throw new ConflictError(`A client with email ${email.value} already exists in this workspace`);
+        throw new ConflictError(
+          `A client with email ${email.value} already exists in this workspace`,
+        );
       }
     }
     const now = this.deps.clock.now();

@@ -1,8 +1,4 @@
-import type {
-  CompanyId,
-  MembershipId,
-  UserId,
-} from '@domain/value-objects/branded-id';
+import type { CompanyId, MembershipId, UserId } from '@domain/value-objects/branded-id';
 import { ValidationError } from '@domain/errors/domain-error';
 
 export type Role = 'owner' | 'coach' | 'client';

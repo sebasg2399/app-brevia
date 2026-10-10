@@ -9,6 +9,7 @@ This change builds the MVP end-to-end: company/coach/client model + subscription
 ## Scope
 
 ### In Scope
+
 - Multi-tenant workspace model (company owns coaches, clients belong to a company)
 - Supabase Auth (email/password + magic link) with roles: owner, coach, client
 - RLS policies on all tables scoped by company_id
@@ -21,6 +22,7 @@ This change builds the MVP end-to-end: company/coach/client model + subscription
 - Subscription state UI (current plan, usage, upgrade CTA)
 
 ### Out of Scope (deferred)
+
 - Stripe Connect (paying coaches directly)
 - Live video / WebRTC
 - Mobile apps
@@ -32,6 +34,7 @@ This change builds the MVP end-to-end: company/coach/client model + subscription
 ## Capabilities
 
 ### New Capabilities
+
 - `auth-and-rbac`: Supabase auth + role-based access + RLS baseline
 - `company-management`: workspace CRUD + member invitations
 - `coach-profiles`: coach profile management
@@ -42,11 +45,13 @@ This change builds the MVP end-to-end: company/coach/client model + subscription
 - `subscription-billing`: Stripe Billing plans + trial + webhooks + state machine
 
 ### Modified Capabilities
+
 None — greenfield project.
 
 ## Approach
 
 Clean Architecture / Hexagonal layered in `src/`:
+
 - `domain/` — entities (Company, Coach, Client, Session, Transcript, AINotes, Subscription) + value objects + domain events. Zero external deps.
 - `application/` — use cases (BookSession, GenerateNotes, SubscribeWorkspace) + ports (interfaces).
 - `infrastructure/` — Supabase repos, Stripe adapter, Anthropic adapter implementing ports.
@@ -56,23 +61,23 @@ Presentation calls application use cases via DI; use cases call infrastructure t
 
 ## Affected Areas
 
-| Area | Impact | Description |
-|------|--------|-------------|
-| `src/domain/` | New | Pure entities + VOs + domain events |
-| `src/application/` | New | Use cases + ports |
-| `src/infrastructure/` | New | Supabase + Stripe + Anthropic adapters |
-| `src/presentation/` | New | App Router pages + server actions |
-| `supabase/migrations/` | New | SQL migrations + RLS policies |
-| `openspec/` | Modified | Specs, design, tasks |
+| Area                   | Impact   | Description                            |
+| ---------------------- | -------- | -------------------------------------- |
+| `src/domain/`          | New      | Pure entities + VOs + domain events    |
+| `src/application/`     | New      | Use cases + ports                      |
+| `src/infrastructure/`  | New      | Supabase + Stripe + Anthropic adapters |
+| `src/presentation/`    | New      | App Router pages + server actions      |
+| `supabase/migrations/` | New      | SQL migrations + RLS policies          |
+| `openspec/`            | Modified | Specs, design, tasks                   |
 
 ## Risks
 
-| Risk | Likelihood | Mitigation |
-|------|------------|------------|
-| RLS misconfiguration leaks data across tenants | Med | RLS tests in CI; deny-by-default; explicit policies per table |
-| Stripe webhook drops events → wrong subscription state | Med | Idempotency by event.id; reconcile job on boot |
-| AI quota bypass via direct API calls | Med | Quota enforced server-side in use case; client only displays |
-| Anthropic rate limits during demo | Low | Fallback message + retry with jitter |
+| Risk                                                   | Likelihood | Mitigation                                                    |
+| ------------------------------------------------------ | ---------- | ------------------------------------------------------------- |
+| RLS misconfiguration leaks data across tenants         | Med        | RLS tests in CI; deny-by-default; explicit policies per table |
+| Stripe webhook drops events → wrong subscription state | Med        | Idempotency by event.id; reconcile job on boot                |
+| AI quota bypass via direct API calls                   | Med        | Quota enforced server-side in use case; client only displays  |
+| Anthropic rate limits during demo                      | Low        | Fallback message + retry with jitter                          |
 
 ## Rollback Plan
 

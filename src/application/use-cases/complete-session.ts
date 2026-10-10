@@ -15,7 +15,11 @@ export class CompleteSession {
     },
   ) {}
 
-  async execute(input: { companyId: CompanyId; actorId: UserId; sessionId: SessionId }): Promise<void> {
+  async execute(input: {
+    companyId: CompanyId;
+    actorId: UserId;
+    sessionId: SessionId;
+  }): Promise<void> {
     const session = await this.deps.sessions.findById(input.sessionId);
     if (!session) throw new NotFoundError('Session', input.sessionId.toString());
     if (!session.belongsToCompany(input.companyId)) {
@@ -24,7 +28,9 @@ export class CompleteSession {
     const coach = await this.deps.coaches.findById(session.coachId);
     const isOwner = await this.isOwner(input.companyId, input.actorId);
     if (!isOwner && !(coach && coach.userId.equals(input.actorId))) {
-      throw new ForbiddenError('Only the assigned coach or the workspace owner can complete this session');
+      throw new ForbiddenError(
+        'Only the assigned coach or the workspace owner can complete this session',
+      );
     }
     session.markCompleted(this.deps.clock.now());
     await this.deps.sessions.save(session);

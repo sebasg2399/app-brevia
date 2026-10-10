@@ -77,7 +77,14 @@ describe('Client', () => {
   });
 
   it('rename updates name and updatedAt', () => {
-    const c = Client.create({ id: clientId, companyId, name: 'Old', email: null, notes: null, now });
+    const c = Client.create({
+      id: clientId,
+      companyId,
+      name: 'Old',
+      email: null,
+      notes: null,
+      now,
+    });
     const later = '2026-02-01T00:00:00.000Z';
     c.rename('New', later);
     expect(c.name).toBe('New');

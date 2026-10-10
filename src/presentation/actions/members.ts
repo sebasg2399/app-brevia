@@ -31,7 +31,9 @@ export async function inviteMemberAction(formData: FormData): Promise<void> {
     role: formData.get('role'),
   });
   if (!parsed.success) {
-    const msg = parsed.error.issues.map((i) => `${i.path.join('.') || 'field'}: ${i.message}`).join(', ');
+    const msg = parsed.error.issues
+      .map((i) => `${i.path.join('.') || 'field'}: ${i.message}`)
+      .join(', ');
     throw new ActionError(msg);
   }
 

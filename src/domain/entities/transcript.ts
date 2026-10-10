@@ -1,8 +1,4 @@
-import type {
-  CompanyId,
-  SessionId,
-  TranscriptId,
-} from '@domain/value-objects/branded-id';
+import type { CompanyId, SessionId, TranscriptId } from '@domain/value-objects/branded-id';
 import { ValidationError, ImmutableResourceError } from '@domain/errors/domain-error';
 
 const MIN_TEXT_LENGTH = 200;

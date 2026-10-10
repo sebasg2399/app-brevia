@@ -55,7 +55,9 @@ export default async function ClientsPage({
           </div>
         )}
         {params.error && (
-          <div className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{params.error}</div>
+          <div className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+            {params.error}
+          </div>
         )}
 
         {canManage && (

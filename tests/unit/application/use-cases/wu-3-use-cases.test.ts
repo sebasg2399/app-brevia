@@ -13,18 +13,9 @@ import { AINotes } from '@domain/entities/ai-notes';
 import { Plan } from '@domain/value-objects/plan';
 import { Email } from '@domain/value-objects/email';
 import { ActionItem } from '@domain/value-objects/action-item';
-import {
-  ClientId,
-  CoachId,
-  CompanyId,
-  SessionId,
-  UserId,
-} from '@domain/value-objects/branded-id';
+import { ClientId, CoachId, CompanyId, SessionId, UserId } from '@domain/value-objects/branded-id';
 import { Slug } from '@domain/value-objects/slug';
-import {
-  QuotaExceededError,
-  StateTransitionError,
-} from '@domain/errors/domain-error';
+import { QuotaExceededError, StateTransitionError } from '@domain/errors/domain-error';
 import {
   FakeAIGateway,
   FakeClock,
@@ -447,9 +438,9 @@ describe('RetryNotes', () => {
       memberships: h.memberships,
       clock: h.clock,
     });
-    await expect(
-      sut.execute({ companyId, actorId: ownerId, notesId: notes.id }),
-    ).rejects.toThrow(/Only failed/);
+    await expect(sut.execute({ companyId, actorId: ownerId, notesId: notes.id })).rejects.toThrow(
+      /Only failed/,
+    );
   });
 
   it('rejects when quota would be exceeded on retry', async () => {
@@ -496,9 +487,9 @@ describe('RetryNotes', () => {
       memberships: h.memberships,
       clock: h.clock,
     });
-    await expect(
-      sut.execute({ companyId, actorId: ownerId, notesId: notes.id }),
-    ).rejects.toThrow(QuotaExceededError);
+    await expect(sut.execute({ companyId, actorId: ownerId, notesId: notes.id })).rejects.toThrow(
+      QuotaExceededError,
+    );
   });
 });
 

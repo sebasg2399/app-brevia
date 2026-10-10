@@ -1,8 +1,4 @@
-import type {
-  AINoteId,
-  CompanyId,
-  TranscriptId,
-} from '@domain/value-objects/branded-id';
+import type { AINoteId, CompanyId, TranscriptId } from '@domain/value-objects/branded-id';
 import type { ActionItem } from '@domain/value-objects/action-item';
 import { StateTransitionError, ValidationError } from '@domain/errors/domain-error';
 
@@ -63,9 +59,7 @@ export class AINotes {
     now: string;
   }): void {
     if (this.props.status !== 'pending') {
-      throw new StateTransitionError(
-        `Cannot mark ready: notes are ${this.props.status}`,
-      );
+      throw new StateTransitionError(`Cannot mark ready: notes are ${this.props.status}`);
     }
     if (typeof input.summary !== 'string') throw new ValidationError('summary required');
     if (typeof input.nextSessionBrief !== 'string') {

@@ -24,15 +24,15 @@ describe('User', () => {
   });
 
   it('throws on empty full name', () => {
-    expect(() =>
-      User.create({ id: fixedId, email, fullName: '   ', now }),
-    ).toThrow(ValidationError);
+    expect(() => User.create({ id: fixedId, email, fullName: '   ', now })).toThrow(
+      ValidationError,
+    );
   });
 
   it('throws on full name over 120 chars', () => {
-    expect(() =>
-      User.create({ id: fixedId, email, fullName: 'a'.repeat(121), now }),
-    ).toThrow(ValidationError);
+    expect(() => User.create({ id: fixedId, email, fullName: 'a'.repeat(121), now })).toThrow(
+      ValidationError,
+    );
   });
 
   it('updates full name', () => {

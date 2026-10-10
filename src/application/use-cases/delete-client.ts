@@ -13,11 +13,12 @@ export class DeleteClient {
     },
   ) {}
 
-  async execute(input: { companyId: CompanyId; actorId: UserId; clientId: ClientId }): Promise<void> {
-    const actor = await this.deps.memberships.findByCompanyAndUser(
-      input.companyId,
-      input.actorId,
-    );
+  async execute(input: {
+    companyId: CompanyId;
+    actorId: UserId;
+    clientId: ClientId;
+  }): Promise<void> {
+    const actor = await this.deps.memberships.findByCompanyAndUser(input.companyId, input.actorId);
     if (!actor || !actor.isOwner()) {
       throw new ForbiddenError('Only the workspace owner can delete a client');
     }

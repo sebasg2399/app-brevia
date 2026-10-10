@@ -9,7 +9,8 @@ export default function HomePage() {
         </span>
         <h1 className="text-5xl font-semibold tracking-tight text-slate-900">Brevia</h1>
         <p className="max-w-xl text-lg text-slate-600">
-          AI Coaching Platform. Turn every session transcript into structured notes, action items, and a brief for the next session.
+          AI Coaching Platform. Turn every session transcript into structured notes, action items,
+          and a brief for the next session.
         </p>
       </div>
 

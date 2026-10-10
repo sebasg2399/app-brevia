@@ -9,7 +9,13 @@ import type { IdGenerator } from '@app/ports/id-generator';
 import type { Clock } from '@app/ports/clock';
 import { Transcript } from '@domain/entities/transcript';
 import { AINotes } from '@domain/entities/ai-notes';
-import type { CompanyId, SessionId, UserId, TranscriptId, AINoteId } from '@domain/value-objects/branded-id';
+import type {
+  CompanyId,
+  SessionId,
+  UserId,
+  TranscriptId,
+  AINoteId,
+} from '@domain/value-objects/branded-id';
 import {
   ConflictError,
   ForbiddenError,
@@ -61,16 +67,16 @@ export class CreateTranscript {
 
     // 2. Session must be completed
     if (session.status !== 'completed') {
-      throw new StateTransitionError(
-        `Cannot add transcript: session is ${session.status}`,
-      );
+      throw new StateTransitionError(`Cannot add transcript: session is ${session.status}`);
     }
 
     // 3. Actor must be the assigned coach or the owner
     const coach = await this.deps.coaches.findById(session.coachId);
     const isOwner = await this.isOwner(input.companyId, input.actorId);
     if (!isOwner && !(coach && coach.userId.equals(input.actorId))) {
-      throw new ForbiddenError('Only the assigned coach or the workspace owner can add a transcript');
+      throw new ForbiddenError(
+        'Only the assigned coach or the workspace owner can add a transcript',
+      );
     }
 
     // 4. No transcript yet
@@ -85,9 +91,7 @@ export class CreateTranscript {
       throw new NotFoundError('Subscription', input.companyId.toString());
     }
     if (!subscription.allowsAI()) {
-      throw new ForbiddenError(
-        `AI notes are disabled: subscription is ${subscription.status}`,
-      );
+      throw new ForbiddenError(`AI notes are disabled: subscription is ${subscription.status}`);
     }
 
     // 6. Quota check
@@ -136,7 +140,13 @@ export class CreateTranscript {
     notes: AINotes,
     text: string,
     _now: string,
-  ): Promise<{ notesStatus: 'pending' | 'ready' | 'failed'; summary?: string; actionItems?: ReadonlyArray<unknown>; nextSessionBrief?: string; errorMessage?: string }> {
+  ): Promise<{
+    notesStatus: 'pending' | 'ready' | 'failed';
+    summary?: string;
+    actionItems?: ReadonlyArray<unknown>;
+    nextSessionBrief?: string;
+    errorMessage?: string;
+  }> {
     const maxAttempts = 2;
     let lastError: unknown = null;
     for (let attempt = 0; attempt <= maxAttempts; attempt++) {

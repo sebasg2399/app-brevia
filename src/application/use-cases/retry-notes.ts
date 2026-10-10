@@ -22,7 +22,11 @@ export class RetryNotes {
     },
   ) {}
 
-  async execute(input: { companyId: CompanyId; actorId: UserId; notesId: AINoteId }): Promise<AINotes> {
+  async execute(input: {
+    companyId: CompanyId;
+    actorId: UserId;
+    notesId: AINoteId;
+  }): Promise<AINotes> {
     const isOwner = await this.isOwner(input.companyId, input.actorId);
     if (!isOwner) {
       throw new ForbiddenError('Only the workspace owner can retry AI notes');

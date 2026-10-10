@@ -14,11 +14,15 @@ describe('DateRange', () => {
   });
 
   it('throws on invalid ISO string', () => {
-    expect(() => DateRange.create('not-a-date', '2026-01-01T00:00:00Z')).toThrow('Invalid ISO datetime');
+    expect(() => DateRange.create('not-a-date', '2026-01-01T00:00:00Z')).toThrow(
+      'Invalid ISO datetime',
+    );
   });
 
   it('throws when start is after end', () => {
-    expect(() => DateRange.create('2026-01-02T00:00:00Z', '2026-01-01T00:00:00Z')).toThrow('start must be before or equal to end');
+    expect(() => DateRange.create('2026-01-02T00:00:00Z', '2026-01-01T00:00:00Z')).toThrow(
+      'start must be before or equal to end',
+    );
   });
 
   it('contains works as inclusive', () => {

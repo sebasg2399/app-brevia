@@ -29,10 +29,22 @@ function toError(err: unknown): string {
   return 'Unknown error';
 }
 
-function parseOrThrow<T>(schema: { safeParse: (input: unknown) => { success: true; data: T } | { success: false; error: { issues: Array<{ path: (string | number)[]; message: string }> } } }, input: unknown): T {
+function parseOrThrow<T>(
+  schema: {
+    safeParse: (input: unknown) =>
+      | { success: true; data: T }
+      | {
+          success: false;
+          error: { issues: Array<{ path: (string | number)[]; message: string }> };
+        };
+  },
+  input: unknown,
+): T {
   const parsed = schema.safeParse(input);
   if (!parsed.success) {
-    const msg = parsed.error.issues.map((i) => `${i.path.join('.') || 'field'}: ${i.message}`).join(', ');
+    const msg = parsed.error.issues
+      .map((i) => `${i.path.join('.') || 'field'}: ${i.message}`)
+      .join(', ');
     throw new ActionError(msg);
   }
   return parsed.data;
@@ -41,7 +53,10 @@ function parseOrThrow<T>(schema: { safeParse: (input: unknown) => { success: tru
 export async function createCoachAction(formData: FormData): Promise<void> {
   const session = await getCurrentSession();
   if (!session) throw new ActionError('Not signed in');
-  const focusAreas = formData.getAll('focusAreas').map(String).filter((s) => s.trim().length > 0);
+  const focusAreas = formData
+    .getAll('focusAreas')
+    .map(String)
+    .filter((s) => s.trim().length > 0);
   const data = parseOrThrow(createCoachSchema, {
     companyId: formData.get('companyId'),
     userId: formData.get('userId'),

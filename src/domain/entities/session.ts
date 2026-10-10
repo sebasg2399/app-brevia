@@ -68,17 +68,13 @@ export class Session {
       throw new ValidationError('Duration must be an integer');
     }
     if (!VALID_DURATIONS.includes(minutes)) {
-      throw new ValidationError(
-        `Duration must be one of ${VALID_DURATIONS.join(', ')} minutes`,
-      );
+      throw new ValidationError(`Duration must be one of ${VALID_DURATIONS.join(', ')} minutes`);
     }
   }
 
   markCompleted(now: string): void {
     if (this.props.status !== 'scheduled') {
-      throw new StateTransitionError(
-        `Cannot mark completed: session is ${this.props.status}`,
-      );
+      throw new StateTransitionError(`Cannot mark completed: session is ${this.props.status}`);
     }
     this.props = {
       ...this.props,
@@ -90,9 +86,7 @@ export class Session {
 
   cancel(now: string): void {
     if (this.props.status !== 'scheduled') {
-      throw new StateTransitionError(
-        `Cannot cancel: session is ${this.props.status}`,
-      );
+      throw new StateTransitionError(`Cannot cancel: session is ${this.props.status}`);
     }
     if (Date.parse(now) > Date.parse(this.props.scheduledAt)) {
       throw new StateTransitionError('Cannot cancel a session that has already started');
@@ -107,9 +101,7 @@ export class Session {
 
   archive(now: string): void {
     if (this.props.status !== 'completed' && this.props.status !== 'canceled') {
-      throw new StateTransitionError(
-        `Cannot archive: session is ${this.props.status}`,
-      );
+      throw new StateTransitionError(`Cannot archive: session is ${this.props.status}`);
     }
     this.props = { ...this.props, status: 'archived', updatedAt: now };
   }

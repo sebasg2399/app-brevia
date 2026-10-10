@@ -41,7 +41,10 @@ export class SupabaseClientRepository implements ClientRepository {
     return this.toDomain(data);
   }
 
-  async listByCompany(companyId: CompanyId, includeDeleted = false): Promise<ReadonlyArray<Client>> {
+  async listByCompany(
+    companyId: CompanyId,
+    includeDeleted = false,
+  ): Promise<ReadonlyArray<Client>> {
     let query = this.db.from('clients').select('*').eq('company_id', companyId.toString());
     if (!includeDeleted) {
       query = query.is('deleted_at', null);

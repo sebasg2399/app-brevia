@@ -10,13 +10,7 @@ import { Company } from '@domain/entities/company';
 import { Membership } from '@domain/entities/membership';
 import { Coach } from '@domain/entities/coach';
 import { Client } from '@domain/entities/client';
-import {
-  ClientId,
-  CoachId,
-  CompanyId,
-  SessionId,
-  UserId,
-} from '@domain/value-objects/branded-id';
+import { ClientId, CoachId, CompanyId, SessionId, UserId } from '@domain/value-objects/branded-id';
 import { Slug } from '@domain/value-objects/slug';
 import { Email } from '@domain/value-objects/email';
 import { StateTransitionError } from '@domain/errors/domain-error';
@@ -186,15 +180,33 @@ describe('UpdateCoachBio', () => {
   });
 
   it('coach can update own bio', async () => {
-    const sut = new UpdateCoachBio({ coaches: h.coaches, memberships: h.memberships, clock: h.clock });
-    await sut.execute({ companyId: h.companyId, actorId: coachUserId, coachId: coach.id, bio: 'new' });
+    const sut = new UpdateCoachBio({
+      coaches: h.coaches,
+      memberships: h.memberships,
+      clock: h.clock,
+    });
+    await sut.execute({
+      companyId: h.companyId,
+      actorId: coachUserId,
+      coachId: coach.id,
+      bio: 'new',
+    });
     const updated = await h.coaches.findById(coach.id);
     expect(updated?.bio).toBe('new');
   });
 
   it('owner can update any coach bio', async () => {
-    const sut = new UpdateCoachBio({ coaches: h.coaches, memberships: h.memberships, clock: h.clock });
-    await sut.execute({ companyId: h.companyId, actorId: h.ownerId, coachId: coach.id, bio: 'owner edit' });
+    const sut = new UpdateCoachBio({
+      coaches: h.coaches,
+      memberships: h.memberships,
+      clock: h.clock,
+    });
+    await sut.execute({
+      companyId: h.companyId,
+      actorId: h.ownerId,
+      coachId: coach.id,
+      bio: 'owner edit',
+    });
     expect((await h.coaches.findById(coach.id))?.bio).toBe('owner edit');
   });
 
@@ -209,9 +221,18 @@ describe('UpdateCoachBio', () => {
         now: h.clock.now(),
       }),
     );
-    const sut = new UpdateCoachBio({ coaches: h.coaches, memberships: h.memberships, clock: h.clock });
+    const sut = new UpdateCoachBio({
+      coaches: h.coaches,
+      memberships: h.memberships,
+      clock: h.clock,
+    });
     await expect(
-      sut.execute({ companyId: h.companyId, actorId: otherCoachUser, coachId: coach.id, bio: 'hack' }),
+      sut.execute({
+        companyId: h.companyId,
+        actorId: otherCoachUser,
+        coachId: coach.id,
+        bio: 'hack',
+      }),
     ).rejects.toThrow(/Only the coach or the workspace owner/);
   });
 });
@@ -248,9 +269,19 @@ describe('CreateClient', () => {
       ids: h.ids,
       clock: h.clock,
     });
-    await sut.execute({ companyId: h.companyId, actorId: h.ownerId, name: 'Bob', email: 'bob@x.com' });
+    await sut.execute({
+      companyId: h.companyId,
+      actorId: h.ownerId,
+      name: 'Bob',
+      email: 'bob@x.com',
+    });
     await expect(
-      sut.execute({ companyId: h.companyId, actorId: h.ownerId, name: 'Bob 2', email: 'bob@x.com' }),
+      sut.execute({
+        companyId: h.companyId,
+        actorId: h.ownerId,
+        name: 'Bob 2',
+        email: 'bob@x.com',
+      }),
     ).rejects.toThrow(/already exists/);
   });
 
@@ -295,7 +326,11 @@ describe('DeleteClient', () => {
     });
     await h.clients.save(client);
 
-    const sut = new DeleteClient({ clients: h.clients, memberships: h.memberships, clock: h.clock });
+    const sut = new DeleteClient({
+      clients: h.clients,
+      memberships: h.memberships,
+      clock: h.clock,
+    });
     await sut.execute({ companyId: h.companyId, actorId: h.ownerId, clientId: client.id });
 
     const updated = await h.clients.findById(client.id);
@@ -326,7 +361,11 @@ describe('DeleteClient', () => {
     });
     await h.clients.save(client);
 
-    const sut = new DeleteClient({ clients: h.clients, memberships: h.memberships, clock: h.clock });
+    const sut = new DeleteClient({
+      clients: h.clients,
+      memberships: h.memberships,
+      clock: h.clock,
+    });
     await expect(
       sut.execute({ companyId: h.companyId, actorId: coachUser, clientId: client.id }),
     ).rejects.toThrow(/only the workspace owner/i);
@@ -533,7 +572,12 @@ describe('Session lifecycle (Complete / Cancel)', () => {
 
   it('coach completes own session', async () => {
     const session = await bookSession();
-    const sut = new CompleteSession({ sessions: h.sessions, coaches: h.coaches, memberships: h.memberships, clock: h.clock });
+    const sut = new CompleteSession({
+      sessions: h.sessions,
+      coaches: h.coaches,
+      memberships: h.memberships,
+      clock: h.clock,
+    });
     await sut.execute({ companyId: h.companyId, actorId: coachUserId, sessionId: session!.id });
     const updated = await h.sessions.findById(session!.id);
     expect(updated?.status).toBe('completed');
@@ -541,14 +585,24 @@ describe('Session lifecycle (Complete / Cancel)', () => {
 
   it('owner can complete any session', async () => {
     const session = await bookSession();
-    const sut = new CompleteSession({ sessions: h.sessions, coaches: h.coaches, memberships: h.memberships, clock: h.clock });
+    const sut = new CompleteSession({
+      sessions: h.sessions,
+      coaches: h.coaches,
+      memberships: h.memberships,
+      clock: h.clock,
+    });
     await sut.execute({ companyId: h.companyId, actorId: h.ownerId, sessionId: session!.id });
     expect((await h.sessions.findById(session!.id))?.status).toBe('completed');
   });
 
   it('cancel before scheduledAt works', async () => {
     const session = await bookSession();
-    const sut = new CancelSession({ sessions: h.sessions, coaches: h.coaches, memberships: h.memberships, clock: h.clock });
+    const sut = new CancelSession({
+      sessions: h.sessions,
+      coaches: h.coaches,
+      memberships: h.memberships,
+      clock: h.clock,
+    });
     await sut.execute({ companyId: h.companyId, actorId: coachUserId, sessionId: session!.id });
     expect((await h.sessions.findById(session!.id))?.status).toBe('canceled');
   });
@@ -556,7 +610,12 @@ describe('Session lifecycle (Complete / Cancel)', () => {
   it('cancel after scheduledAt throws', async () => {
     const session = await bookSession();
     h.clock.advance(48 * 60 * 60); // 48h
-    const sut = new CancelSession({ sessions: h.sessions, coaches: h.coaches, memberships: h.memberships, clock: h.clock });
+    const sut = new CancelSession({
+      sessions: h.sessions,
+      coaches: h.coaches,
+      memberships: h.memberships,
+      clock: h.clock,
+    });
     await expect(
       sut.execute({ companyId: h.companyId, actorId: coachUserId, sessionId: session!.id }),
     ).rejects.toThrow(/already started/);
@@ -564,7 +623,12 @@ describe('Session lifecycle (Complete / Cancel)', () => {
 
   it('completing twice throws', async () => {
     const session = await bookSession();
-    const sut = new CompleteSession({ sessions: h.sessions, coaches: h.coaches, memberships: h.memberships, clock: h.clock });
+    const sut = new CompleteSession({
+      sessions: h.sessions,
+      coaches: h.coaches,
+      memberships: h.memberships,
+      clock: h.clock,
+    });
     await sut.execute({ companyId: h.companyId, actorId: coachUserId, sessionId: session!.id });
     await expect(
       sut.execute({ companyId: h.companyId, actorId: coachUserId, sessionId: session!.id }),
