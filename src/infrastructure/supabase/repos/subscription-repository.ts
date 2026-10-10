@@ -30,6 +30,16 @@ export class SupabaseSubscriptionRepository implements SubscriptionRepository {
     return this.toDomain(data);
   }
 
+  async findByStripeCustomerId(stripeCustomerId: string): Promise<Subscription | null> {
+    const { data, error } = await this.db
+      .from('subscriptions')
+      .select('*')
+      .eq('stripe_customer_id', stripeCustomerId)
+      .maybeSingle<SubscriptionRow>();
+    if (error || !data) return null;
+    return this.toDomain(data);
+  }
+
   async save(subscription: Subscription): Promise<void> {
     const row = {
       company_id: subscription.companyId.toString(),
